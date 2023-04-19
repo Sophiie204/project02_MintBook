@@ -23,11 +23,35 @@
                             </h2>
                             <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
-                                <strong>환불 안됩니다. </strong> 그냥 쓰세요.
+                               환불 안돼요. 그냥 쓰세요.
                             </div>
                             </div>
                         </div>
-                    </div>    
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <label class="QText">Q.</label>&emsp;환불하려면 어떻게 해야 하나요?
+                            </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                환불안됨
+                            </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <label class="QText">Q.</label>&emsp;환불하려면 어떻게 해야 하나요?
+                            </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                환불No
+                            </div>
+                            </div>
+                        </div>
+                    </div>  
                 </div>
             </div>
             <div>
@@ -87,8 +111,7 @@ export default {
    /*페이지 타이틀 영역 */
    .maintitle_wrap{
         height: 30px;
-        margin-top: 40px;
-        margin-bottom: 50px;
+        padding-bottom: 50px;
     }
     .maintitle_wrap > li{
         float: left;
@@ -103,6 +126,7 @@ export default {
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 50px;
+        margin-top: 50px;
     }
 
      /*사이드 카테고리 영역*/
@@ -137,6 +161,20 @@ export default {
         color: #3DDCA3;
     }
 
+    .accordion {
+        --bs-accordion-active-bg: white;
+        --bs-accordion-active-color: #3ddca3;
+        --bs-accordion-btn-focus-box-shadow: none;
+    }
+
+    .accordion-button:not(.collapsed)::after {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    }
+
+    .accordion-body{
+        color: grey;
+    }
+    
 
 
 </style>
