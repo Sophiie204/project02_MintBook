@@ -232,7 +232,21 @@ export default {
 </script>
 
 <style lang="css" scoped>
+    /*초기화 */
+    *{
+        padding:0;
+        margin:0;
+    }
 
+    ul,li{
+        list-style: none;
+    }
+
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    
 /*HeaderPage용 공백 */
 .headerpage{
     height: 95px;

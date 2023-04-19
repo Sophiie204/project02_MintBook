@@ -13,8 +13,21 @@
                     </ul>
                 </div>
                 <div id="section">
-                    <p id="maintitle">1:1문의접수</p>
-                    
+                    <p id="maintitle">자주 묻는 질문</p>
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <label class="QText">Q.</label>&emsp;환불하려면 어떻게 해야 하나요?
+                            </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <strong>환불 안됩니다. </strong> 그냥 쓰세요.
+                            </div>
+                            </div>
+                        </div>
+                    </div>    
                 </div>
             </div>
             <div>
@@ -45,6 +58,21 @@ export default {
 </script>
 
 <style lang="css" scoped>
+    /* 초기화 */
+    *{
+        padding:0;
+        margin:0;
+    }
+
+    ul,li{
+        list-style: none;
+    }
+
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    
      /*1200px 중앙정렬 */
      .center_wrap{
         width: 1200px;
@@ -102,7 +130,12 @@ export default {
         font-weight: bold;
     }
 
-
+    /*드롭다운 영역 */
+    .QText{
+        font-size: 36px;
+        font-weight: bolder;
+        color: #3DDCA3;
+    }
 
 
 

@@ -14,7 +14,7 @@ import EventPage from '../views/EventPage'
 import EventDetailPage from '../views/EventDetailPage'
 import CSPage from '../views/CSPage'
 import CSRegisterPage from '../views/CSRegisterPage'
-import FaqPage from '../views/FaqPage'
+import FAQPage from '../views/FAQPage'
 
 const routes = [
   {
@@ -88,10 +88,12 @@ const routes = [
     component: CSRegisterPage
   },
   {
-    path: 'cs/faq',
+    path: '/faq',
     name: 'faq',
-    component: FaqPage
+    component: FAQPage
   },
+
+
 ]
 
 const router = createRouter({

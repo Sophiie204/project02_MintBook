@@ -48,6 +48,21 @@ export default {
 </script>
 
 <style lang="css" scoped>
+    /*초기화 */
+    *{
+        padding:0;
+        margin:0;
+    }
+
+    ul,li{
+        list-style: none;
+    }
+
+    a{
+        text-decoration: none;
+        color: black;
+    }
+    
     /*1200px 중앙정렬 */
     .center_wrap{
         width: 1200px;
