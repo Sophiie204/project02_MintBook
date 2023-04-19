@@ -191,7 +191,7 @@ export default {
 
     #call3{
         font-size: 15px;
-        color: black;
+        color: rgb(133, 133, 133);
         margin-top: 30px;
     }
 

@@ -13,6 +13,8 @@ import EditorPickPage from '../views/EditorPickPage'
 import EventPage from '../views/EventPage'
 import EventDetailPage from '../views/EventDetailPage'
 import CSPage from '../views/CSPage'
+import CSRegisterPage from '../views/CSRegisterPage'
+import FaqPage from '../views/FaqPage'
 
 const routes = [
   {
@@ -71,14 +73,24 @@ const routes = [
     component: EventPage
   },
   {
-    path: '/eventdetail',
-    name: 'eventdetail',
+    path: '/event/detail',
+    name: 'event/detail',
     component: EventDetailPage
   },
   {
     path: '/cs',
     name: 'cs',
     component: CSPage
+  },
+  {
+    path: '/cs/register',
+    name: 'csregister',
+    component: CSRegisterPage
+  },
+  {
+    path: 'cs/faq',
+    name: 'faq',
+    component: FaqPage
   },
 ]
 
