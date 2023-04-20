@@ -7,9 +7,9 @@
                 <div id="category">
                     <p id="category_title">고객센터</p>
                     <ul>
-                        <li><a href="*">1:1문의접수</a></li>
-                        <li><a href="*">자주 묻는 질문</a></li>
-                        <li><a href="*">공지사항</a></li>
+                        <li><a href="/cs/register" id="bold">1:1문의접수</a></li>
+                        <li><a href="/faq">자주 묻는 질문</a></li>
+                        <li><a href="/notice">공지사항</a></li>
                     </ul>
                 </div>
                 <div id="section">
@@ -29,7 +29,7 @@
                         </tr>
                     </table>
                     <div id="btn_wrap">
-                        <button>등록</button>
+                        <button id="bold">등록</button>
                         <button><a href="/cs">취소</a></button>
                     </div>
                 </div>
@@ -130,7 +130,12 @@ export default {
         margin-bottom: 10px;
     }
 
-    #category > ul > li:hover{
+    #category > ul > li > a:hover{
+        color: black;
+        font-weight: bold;
+    }
+
+    #bold{
         font-weight: bold;
     }
 

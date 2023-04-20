@@ -15,6 +15,15 @@ import EventDetailPage from '../views/EventDetailPage'
 import CSPage from '../views/CSPage'
 import CSRegisterPage from '../views/CSRegisterPage'
 import FAQPage from '../views/FAQPage'
+import NoticePage from '../views/NoticePage'
+import NoticeDetailPage from '../views/NoticeDetailPage'
+//관리자파트
+import ALoginPage from '../views/Admin/ALoginPage'
+import ABookPage from '../views/Admin/ABookPage'
+
+//테스트
+import CategoryTest from '../views/Test/CategoryTest'
+
 
 const routes = [
   {
@@ -91,6 +100,31 @@ const routes = [
     path: '/faq',
     name: 'faq',
     component: FAQPage
+  },
+  {
+    path: '/notice',
+    name: 'notice',
+    component: NoticePage
+  },
+  {
+    path: '/notice/detail',
+    name: 'noticedetail',
+    component: NoticeDetailPage
+  },
+  {
+    path: '/admin/login',
+    name: 'adminlogin',
+    component: ALoginPage
+  },
+  {
+    path: '/admin/book',
+    name: 'adminbook',
+    component: ABookPage
+  },
+  {
+    path: '/categorytest',
+    name: 'categoryTest',
+    component: CategoryTest
   },
 
 

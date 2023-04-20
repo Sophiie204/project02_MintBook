@@ -122,7 +122,6 @@ export default {
         color: white;
         border-radius: 5px;
         cursor: pointer;
-        
     }
     
 </style>

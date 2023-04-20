@@ -365,11 +365,11 @@ export default {
         padding-bottom: 10px;
     }
 
-    .paymethod_btn:hover{
+    /* .paymethod_btn:hover{
         border: 0.5px solid #3DDCA3;
         background: #3DDCA3;
         color: white;
-    }
+    } */
 
     input[type=radio]{
         display: none;

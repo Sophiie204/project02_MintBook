@@ -7,9 +7,9 @@
                 <div id="category">
                     <p id="category_title">고객센터</p>
                     <ul>
-                        <li><a href="*">1:1문의접수</a></li>
-                        <li><a href="*">자주 묻는 질문</a></li>
-                        <li><a href="*">공지사항</a></li>
+                        <li><a href="/cs/register">1:1문의접수</a></li>
+                        <li><a href="/faq">자주 묻는 질문</a></li>
+                        <li><a href="/notice">공지사항</a></li>
                     </ul>
                 </div>
                 <div id="help_section">
@@ -135,8 +135,9 @@ export default {
         margin-bottom: 10px;
     }
 
-    #category > ul > li:hover{
+    #category > ul > li >a:hover{
         font-weight: bold;
+        color: black;
     }
 
     /*무엇을 도와드릴까요 영역 */
