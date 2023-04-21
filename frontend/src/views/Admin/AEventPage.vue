@@ -5,43 +5,39 @@
                 <admin-menu-page></admin-menu-page>
             </div>
             <div id="content_wrap">
-                <p id="maintitle">도서관리</p>
+                <p id="maintitle">이벤트 관리</p>
                 <label>
                     <select>
-                        <option value="title">도서명</option>
-                        <option value="author">저자명</option>
-                        <option value="isbn">ISBN</option>
-                        <option value="publisher">출판사</option>
+                        <option value="title">진행여부</option>
+                        <option value="author">제목</option>
+                        <option value="isbn">작성날짜</option>
+                        <option value="publisher">만료날짜</option>
                     </select>
                 </label>
                 <label>
                     <input type="text">
                 </label>
                 <button id="search" @click="BookSearch()">검색</button>
-                <button id="register">도서등록</button>
+                <button id="register">이벤트 등록</button>
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">ISBN</th>
-                            <th scope="col">도서명</th>
-                            <th scope="col">저자명</th>
-                            <th scope="col">출판사</th>
-                            <th scope="col">출판일</th>
-                            <th scope="col">재고수</th>
-                            <th scope="col">정가</th>
+                            <th scope="col">제목</th>
+                            <th scope="col">등록날짜</th>
+                            <th scope="col">시작날짜</th>
+                            <th scope="col">만료날짜</th>
+                            <th scope="col">진행여부</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="tmp of state.num" :key="tmp">
                             <th scope="row">{{ tmp }}</th>
-                            <td>98746565163521</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>김다인</td>
-                            <td>팩토리나인</td>
-                            <td>2023-03-09</td>
-                            <td>5</td>
-                            <td>12,900원</td>
+                            <td>봄맞이 도서 이벤트</td>
+                            <td>2023-03-24</td>
+                            <td>2023-03-30</td>
+                            <td>2023-04-30</td>
+                            <td>진행중</td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,7 +65,7 @@ export default {
         })
 
         const BookSearch=()=>{
-            router.push("/admin/book/search");
+            router.push("/admin/event/search");
         }
 
         return {

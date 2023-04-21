@@ -5,43 +5,29 @@
                 <admin-menu-page></admin-menu-page>
             </div>
             <div id="content_wrap">
-                <p id="maintitle">도서관리</p>
-                <label>
-                    <select>
-                        <option value="title">도서명</option>
-                        <option value="author">저자명</option>
-                        <option value="isbn">ISBN</option>
-                        <option value="publisher">출판사</option>
-                    </select>
-                </label>
-                <label>
-                    <input type="text">
-                </label>
-                <button id="search" @click="BookSearch()">검색</button>
-                <button id="register">도서등록</button>
+                <p id="maintitle">아이디:"user1"</p>
+                <p id="searchtotal">검색결과 8건</p>
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
-                            <th scope="col">ISBN</th>
-                            <th scope="col">도서명</th>
-                            <th scope="col">저자명</th>
-                            <th scope="col">출판사</th>
-                            <th scope="col">출판일</th>
-                            <th scope="col">재고수</th>
-                            <th scope="col">정가</th>
+                            <th scope="col">주문번호</th>
+                            <th scope="col">주문내역</th>
+                            <th scope="col">아이디</th>
+                            <th scope="col">금액</th>
+                            <th scope="col">주문날짜</th>
+                            <th scope="col">주문현황</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="tmp of state.num" :key="tmp">
                             <th scope="row">{{ tmp }}</th>
                             <td>98746565163521</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>김다인</td>
-                            <td>팩토리나인</td>
+                            <td>불행한 당신을 위하여 외 2권</td>
+                            <td>user1</td>
+                            <td>23,500원</td>
                             <td>2023-03-09</td>
-                            <td>5</td>
-                            <td>12,900원</td>
+                            <td>발송준비중</td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,7 +55,7 @@ export default {
         })
 
         const BookSearch=()=>{
-            router.push("/admin/book/search");
+            router.push("/admin/order/search");
         }
 
         return {
@@ -117,7 +103,12 @@ import
         font-size: 24px;
         font-weight: bold;
         margin-top: 50px;
-        margin-bottom:70px;
+        margin-bottom:20px;
+    }
+
+    #searchtotal{
+        font-size: 20px;
+        margin-bottom:20px;
     }
 
     button{

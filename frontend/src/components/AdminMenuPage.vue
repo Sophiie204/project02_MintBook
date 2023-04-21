@@ -8,14 +8,14 @@
         </div>
         <div id="menu_bottom">
             <ul>
-                <li><a href="/admin/book">도서 관리</a></li>
-                <li><a href="/admin/book">주문 관리</a></li>
-                <li><a href="/admin/book">회원 관리</a></li>
-                <li><a href="/admin/book">리뷰 관리</a></li>
-                <li><a href="/admin/book">1:1문의 관리</a></li>
-                <li><a href="/admin/book">이벤트 관리</a></li>
-                <li><a href="/admin/book">공지 관리</a></li>
-                <li><a href="/admin/book">통계</a></li>
+                <li><router-link to="/admin/book" class="router-link-active router-link-exact-active">도서 관리</router-link></li>
+                <li><router-link to="/admin/order" class="router-link-active router-link-exact-active">주문 관리</router-link></li>
+                <li><router-link to="/admin/member" class="router-link-active">회원 관리</router-link></li>
+                <li><router-link to="/admin/review" class="router-link-active">리뷰 관리</router-link></li>
+                <li><router-link to="/admin/cs" class="router-link-active">1:1문의 관리</router-link></li>
+                <li><router-link to="/admin/event" class="router-link-active">이벤트 관리</router-link></li>
+                <li><router-link to="/admin/notice" class="router-link-active">공지 관리</router-link></li>
+                <li><router-link to="/admin/stats" class="router-link-active">통계</router-link></li>
             </ul>
         </div>
     </div>
@@ -53,14 +53,15 @@ export default {
         text-decoration: none;
         color: black;
     }
-    a:hover{
+
+    a{
         color: black;
         font-weight: bold;
     }
     
     #nav_total_wrap{
-        width: 290px;
-        background: rgb(194, 194, 194);
+        /* width: 290px; */
+        /* background: rgb(194, 194, 194); */
         text-align: center;
     }
     img{
@@ -82,6 +83,9 @@ export default {
     #menu_bottom > ul > li{
         padding-bottom: 20px;
     }
-
+    
+    .router-link-active{
+        font-weight: bold !important;
+    }
     
 </style>

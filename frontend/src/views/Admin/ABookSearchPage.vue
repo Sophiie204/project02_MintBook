@@ -5,19 +5,8 @@
                 <admin-menu-page></admin-menu-page>
             </div>
             <div id="content_wrap">
-                <p id="maintitle">도서관리</p>
-                <label>
-                    <select>
-                        <option value="title">도서명</option>
-                        <option value="author">저자명</option>
-                        <option value="isbn">ISBN</option>
-                        <option value="publisher">출판사</option>
-                    </select>
-                </label>
-                <label>
-                    <input type="text">
-                </label>
-                <button id="search" @click="BookSearch()">검색</button>
+                <p id="maintitle">출판사:"팩토리나인"</p>
+                <p id="searchtotal">검색결과 8건</p>
                 <button id="register">도서등록</button>
                 <table class="table">
                     <thead>
@@ -45,9 +34,6 @@
                         </tr>
                     </tbody>
                 </table>
-                <div id="pagination">
-                    <el-pagination layout="prev, pager, next" :total="50" />
-                </div>
             </div>
         </div>
     </div>
@@ -56,7 +42,6 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
-import router from '@/router';
 
 export default {
     components:{
@@ -68,14 +53,7 @@ export default {
             num:["1","2","3","4","5","6","7","8","9","10"]
         })
 
-        const BookSearch=()=>{
-            router.push("/admin/book/search");
-        }
-
-        return {
-            state,
-            BookSearch
-        }
+        return {state}
     }
 }
 </script>
@@ -112,12 +90,23 @@ import
         padding-right: 30px;
     }
 
+    /*사이드메뉴 영역 */
+    #nav_wrap{
+        background: rgb(223, 223, 223);
+        height: 100vh;
+    }
+
     /*콘텐츠 상단 영역 */
     #maintitle{
         font-size: 24px;
         font-weight: bold;
         margin-top: 50px;
-        margin-bottom:70px;
+        margin-bottom:20px;
+    }
+
+    #searchtotal{
+        font-size: 20px;
+        margin-bottom:20px;
     }
 
     button{
@@ -125,38 +114,19 @@ import
         border-radius: 5px;
         color: white;
         background: black;
-    }
-
-    select{
-        width: 100px;
-        height: 28px;
-        margin-right: 20px;
-    }
-
-    input{
-        margin-right: 10px;
+        margin-bottom:30px;
     }
 
     #register{
         margin-left: 50px;
-        float:right;
+        float: right;
     }
 
     /*콘텐츠 하단 영역 */
-    #nav_wrap{
-        background: rgb(223, 223, 223);
-        height: 100vh;
-    }
 
     .table{
         width: 100%;
         margin-top:30px;
-        margin-bottom: 30px;
-    }
-
-    #pagination{
-        display: flex;
-        justify-content: center;
     }
     
 
