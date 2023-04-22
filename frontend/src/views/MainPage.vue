@@ -246,6 +246,11 @@ export default {
         text-decoration: none;
         color: black;
     }
+
+    a:hover{
+        color: black;
+        font-weight: bold;
+    }
     
 /*HeaderPage용 공백 */
 .headerpage{

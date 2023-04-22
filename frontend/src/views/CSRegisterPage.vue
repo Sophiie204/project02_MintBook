@@ -29,7 +29,7 @@
                         </tr>
                     </table>
                     <div id="btn_wrap">
-                        <button id="bold">등록</button>
+                        <button>등록</button>
                         <button><a href="/cs">취소</a></button>
                     </div>
                 </div>
@@ -75,6 +75,12 @@ export default {
     a{
         text-decoration: none;
         color: black;
+    }
+
+    a:hover{
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
     }
     
      /*1200px 중앙정렬 */
@@ -139,6 +145,7 @@ export default {
         font-weight: bold;
     }
 
+
     /*무엇을 도와드릴까요 영역 */
     #section{
         font-weight: bold;
@@ -184,6 +191,9 @@ export default {
         border: 0.5px solid #9B9B9B;
         margin-left: 10px;
         cursor: pointer;
+    }
+    button:hover{
+        font-weight: bold;
     }
 
 

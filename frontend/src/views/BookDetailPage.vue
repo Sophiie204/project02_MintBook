@@ -340,7 +340,7 @@ export default {
 
     .top_bottom_left > img{
         width: 419px;
-        box-shadow: 5px 5px 5px 3px rgb(227, 227, 227);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
     }
 
     .top_bottom_right{

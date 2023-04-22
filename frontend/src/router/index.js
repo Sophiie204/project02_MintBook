@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+//유저 파트
 import MainPage from '../views/MainPage'
 import SearchPage from '../views/SearchPage'
 import BookDetailPage from '../views/BookDetailPage'
@@ -17,7 +18,8 @@ import CSRegisterPage from '../views/CSRegisterPage'
 import FAQPage from '../views/FAQPage'
 import NoticePage from '../views/NoticePage'
 import NoticeDetailPage from '../views/NoticeDetailPage'
-//관리자파트
+
+//관리자 파트
 import ALoginPage from '../views/Admin/ALoginPage'
 import ABookPage from '../views/Admin/ABookPage'
 import ABookSearchPage from '../views/Admin/ABookSearchPage'
@@ -154,7 +156,7 @@ const routes = [
     component: ABookEditPage
   },
   {
-    path: '/admin/order',
+    path: '/Aorder',
     name: 'adminorder',
     component: AOrderPage
   },

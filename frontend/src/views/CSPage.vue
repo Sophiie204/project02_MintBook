@@ -83,6 +83,12 @@ export default {
         text-decoration: none;
         color: black;
     }
+
+    a:hover{
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+    }
     /*1200px 중앙정렬 */
      .center_wrap{
         width: 1200px;

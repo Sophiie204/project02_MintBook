@@ -126,6 +126,7 @@ export default {
     }
     .maintitle_wrap > li{
         float: left;
+        margin-bottom: 40px;
     }
 
     .maintitle_wrap > li > img{
@@ -187,15 +188,17 @@ export default {
 
     .checkbox:checked + label::after {
         content:'✓';
-        font-size: 15px;
+        font-size: 12px;
         background: #3DDCA3;
+        /* border:1px solid #3DDCA3; */
         color: white;
+        border-radius: 4px;
         width: 20px;
         height: 20px;
         text-align: center;
         position: absolute;
-        left: 0;
-        top:0;
+        left: -1px;
+        top:-1px;
     }
     
     /*버튼 */
@@ -230,7 +233,7 @@ export default {
     }
     #fontred{
         color: red;
-        font-size: 18px;
+        font-size: 14px;
     }
 
     /*테이블 내부 */

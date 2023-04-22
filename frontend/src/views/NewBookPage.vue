@@ -125,6 +125,11 @@ export default {
         text-decoration: none;
         color: black;
     }
+    a:hover{
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+    }
     
     /*1200px 중앙정렬 */
     .center_wrap{
@@ -229,15 +234,17 @@ export default {
 
     .checkbox:checked + label::after {
         content:'✓';
-        font-size: 15px;
+        font-size: 12px;
         background: #3DDCA3;
+        /* border:1px solid #3DDCA3; */
         color: white;
+        border-radius: 4px;
         width: 20px;
         height: 20px;
         text-align: center;
         position: absolute;
-        left: 0;
-        top:0;
+        left: -1px;
+        top:-1px;
     }
     
 
@@ -289,7 +296,7 @@ export default {
         border: 0.5px solid #B1B1B1;
         background: white;
         color: red;
-        font-size: 18px;
+        font-size: 14px;
     }
 
     /*테이블 내부 */

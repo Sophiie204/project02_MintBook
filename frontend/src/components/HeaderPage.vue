@@ -17,14 +17,14 @@
         </ul>
         <ul id="nav_right_wrap">
           <li>
-            <a href="*"><img src="../assets/Navigation/profile.png" id="profile" alt="profile"></a>
+            <a href="/"><img src="../assets/Navigation/profile.png" id="profile" alt="profile"></a>
           </li>
           <li>
-            <a href="*"><img src="../assets/Navigation/cart.png" id="cart" alt="cart"></a>
+            <a href="/"><img src="../assets/Navigation/cart.png" id="cart" alt="cart"></a>
           </li>
-          <li><a href="*">고객센터</a></li>
-          <li><a href="*">회원가입</a></li>
-          <li><a href="*">로그인</a></li>
+          <li><a href="/">고객센터</a></li>
+          <li><a href="/">회원가입</a></li>
+          <li><a href="/">로그인</a></li>
         </ul>
       </div>
       <div id="modal_wrap" v-if="state.modalOpen === true">
@@ -108,6 +108,11 @@ export default {
     a{
       text-decoration: none;
       color: black;
+    }
+    a:hover{
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
     }
 
 

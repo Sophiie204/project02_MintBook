@@ -75,7 +75,7 @@
             </div>
             <div class="dc_section">
                 <p class="section_title">캐시/포인트</p>
-                <table class="table">
+                <table class="table" id="cashtable">
                     <tr>
                         <td class="dc_dt1">포인트</td>
                         <td class="dc_dt2">2,000원</td>
@@ -312,12 +312,15 @@ export default {
         margin-top: 50px;
         padding-bottom: 50px;
         border-bottom: 1px solid #CCCCCC;
-
     }
 
+    #cashtable{
+        vertical-align: middle;
+    }
     .dc_dt1{
         font-weight: bold;
         width: 100px;
+        border-bottom-width: 0px;
     }
 
     .dc_dt2{
@@ -325,9 +328,11 @@ export default {
         width: 120px;
         text-align: right;
         padding-right: 20px;
+        border-bottom-width: 0px;
     }
     .dc_dt3{
         width: 320px;
+        border-bottom-width: 0px;
     }
     .dc_dt3 >input{
         width: 300px;
@@ -336,10 +341,12 @@ export default {
     .dc_dt4{
         text-align: left;
         width: 180px;
+        border-bottom-width: 0px;
     }
 
     .dc_dt5{
         text-align: left;
+        border-bottom-width: 0px;
     }
 
     .dc_btn{
