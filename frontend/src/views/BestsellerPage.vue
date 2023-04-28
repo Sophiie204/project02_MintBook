@@ -7,7 +7,7 @@
                 <div id="category">
                     <p id="category_title">카테고리</p>
                     <ul v-for="tmp of state.categorylist" :key="tmp">
-                        <li id="category_list"><a href="/bestseller">{{ tmp }}</a></li>
+                        <li id="category_list" style="cursor: pointer;" @click="categoryBest(tmp.categoryid)">{{ tmp.categoryname }}</li>
                     </ul>
                 </div>
                 <div id="booklist">
@@ -15,6 +15,7 @@
                         <li><img src="../assets/MainPage/bestseller.png" alt=""></li>
                         <li id="maintitle">베스트셀러</li>
                     </ul>
+                    {{ state.checked }}
                     <table>
                         <tr>
                             <th>
@@ -25,31 +26,25 @@
                                 <button class="button1">찜</button>
                                 <button class="button1">장바구니</button>
                                 <button class="button2">바로구매</button>
-                                <select name="" id="">
-                                    <option value="">판매순</option>
-                                    <option value="">최신순</option>
-                                    <option value="">높은가격순</option>
-                                    <option value="">낮은가격순</option>
-                                </select>
                             </th>
                         </tr>
 
-                        <tr id="table_bottom_tr" v-for="(item, idx) in state.list" :key="idx">
+                        <tr id="table_bottom_tr" v-for="(tmp, idx) in state.item.content" :key="idx">
                             <td style="width:20px;">
-                                <input type="checkbox" :id=item v-model="state.checked" :value="item" class="checkbox">
-                                <label :for="item"></label>
+                                <input type="checkbox" :id=tmp.id v-model="state.checked" :value="tmp.id" class="checkbox">
+                                <label :for="tmp.id"></label>
                             </td>
                             <td style="width:150px; text-align: center;">
-                                <img src="../assets/MainPage/book1.jpg" alt="boo1" id="img">
+                                <img :src="tmp.img" alt="boo1" id="img">
                             </td>
                             <td id="price_wrap">
-                                <p id="title">세이노의 가르침</p>
-                                <p id="author">세이노·데이원·2023.03.02</p>
+                                <p id="title">{{ tmp.bookName }}</p>
+                                <p id="author">{{tmp.author}}·{{tmp.publisher}}·{{ tmp.pubDate }}</p>
                                 <label id="dc">10%</label>
-                                <label id="dc_price">6,480원</label>
-                                <label id="price">7,200원</label>
-                                <label id="point">|360p</label>
-                                <div id="description">2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고</div>
+                                <label id="dc_price">{{tmp.price}}원</label>
+                                <label id="price">{{Math.round(tmp.price*0.011)*100}}원</label>
+                                <label id="point"> | {{Math.round(tmp.price*0.05)}}p</label>
+                                <div id="description">{{ tmp.bookInfo }}</div>
                             </td>
                             <td style="width:150px; text-align: right;">
                                 <button class="button3">장바구니</button><br>
@@ -59,7 +54,7 @@
                         </tr>
                     </table>
                     <div class="example-pagination-block">
-                        <el-pagination layout="prev, pager, next" :total="100"/>
+                        <el-pagination layout="prev, pager, next" :total="state.item.totalElements"/>
                     </div>
                 </div>
            </div>
@@ -74,6 +69,7 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import axios from 'axios'
 
 import { reactive } from 'vue'
 
@@ -86,23 +82,69 @@ export default {
 
     setup () {
         const state = reactive({
-            list:["1","2","3","4","5","6","7","8","9","10"],
-            categorylist:["소설","시/에세이",,"인문","가정/육아","요리","건강","취미/실용/스포츠","겅제/경영","자기계발","정치/사회","역사/문화","종교","예술/대중문화","중/고등참고서","기술/공학","외국어","과학","취업/수험서","여행","컴퓨터/IT","잡지","청소년"],
-            checked:[]
+            categorylist:[{categoryname:"소설", categoryid:1},
+                          {categoryname:"시/에세이", categoryid:2},
+                          {categoryname:"인문", categoryid:3},
+                          {categoryname:"가정/육아", categoryid:4},
+                          {categoryname:"요리", categoryid:5},
+                          {categoryname:"건강", categoryid:6},
+                          {categoryname:"취미/실용/스포츠", categoryid:7},
+                          {categoryname:"경제/경영", categoryid:8},
+                          {categoryname:"자기계발", categoryid:9},
+                          {categoryname:"정치/사회", categoryid:10},
+                          {categoryname:"역사/문화", categoryid:11},
+                          {categoryname:"종교", categoryid:12},
+                          {categoryname:"예술/대중문화", categoryid:13},
+                          {categoryname:"중/고등참고서", categoryid:14},
+                          {categoryname:"기술/공학", categoryid:15},
+                          {categoryname:"외국어", categoryid:16},
+                          {categoryname:"과학", categoryid:17},
+                          {categoryname:"취업/수험서", categoryid:18},
+                          {categoryname:"여행", categoryid:19},
+                          {categoryname:"컴퓨터/IT", categoryid:20},
+                          {categoryname:"잡지", categoryid:21},
+                          {categoryname:"청소년", categoryid:22}],
+            checked:[],
+            item:[],
             
         })
 
+        const load=()=>{
+            axios.get('/api/get/bestseller').then(({data})=>{
+                console.log(data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const categoryBest=(e)=>{
+            axios.get(`/api/get/bestseller/genre?genre=${e}&size=10`).then(({data})=>{
+                console.log(data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            })
+        }
+
+        load();
+
         return {
             state,
+            categoryBest
         }
     },
     computed:{
         checkAll:{
             get:function(){
-                return this.state.list.length === this.state.checked.length;
+                return this.state.item.totalElements === this.state.checked.length;
             },
             set:function(e){
-                this.state.checked = e ? this.state.list : [];
+                let tmp_id = [];
+                for(let tmp of this.state.item.content){
+                    tmp_id.push(tmp.id);//[1,2,3,4,5,6]
+                }
+                this.state.checked = e ? tmp_id : [];
             }
         }
     }

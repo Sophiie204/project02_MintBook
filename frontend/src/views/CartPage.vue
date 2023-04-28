@@ -37,6 +37,9 @@
                         <label id="point">|360p</label>
                         <div id="description">2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고</div>
                     </td>
+                    <td id="quantity">
+                        1
+                    </td>
                     <td style="width:150px; text-align: right;">
                         <button class="button1" id="fontred">♥</button><br>
                         <button class="button4">바로구매</button><br>
@@ -283,6 +286,11 @@ export default {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+    }
+
+    #quantity{
+        width: 150px;
+        text-align: center;
     }
 
     /* 페이지네이션 */
