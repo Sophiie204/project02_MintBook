@@ -41,8 +41,8 @@
                                 <p id="title">{{ tmp.bookName }}</p>
                                 <p id="author">{{tmp.author}}·{{tmp.publisher}}·{{ tmp.pubDate }}</p>
                                 <label id="dc">10%</label>
-                                <label id="dc_price">{{tmp.price}}원</label>
-                                <label id="price">{{Math.round(tmp.price*0.011)*100}}원</label>
+                                <label id="dc_price">{{Number(tmp.price).toLocaleString()}}원</label>
+                                <label id="price">{{Number(Math.round(tmp.price*0.011)*100).toLocaleString()}}원</label>
                                 <label id="point"> | {{Math.round(tmp.price*0.05)}}p</label>
                                 <div id="description">{{ tmp.bookInfo }}</div>
                             </td>
@@ -54,7 +54,7 @@
                         </tr>
                     </table>
                     <div class="example-pagination-block">
-                        <el-pagination layout="prev, pager, next" :total="state.item.totalElements"/>
+                        <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handlePage"/>
                     </div>
                 </div>
            </div>
@@ -72,6 +72,7 @@ import FooterPage from '@/components/FooterPage.vue'
 import axios from 'axios'
 
 import { reactive } from 'vue'
+
 
 export default {
     
@@ -106,32 +107,49 @@ export default {
                           {categoryname:"청소년", categoryid:22}],
             checked:[],
             item:[],
+            total:0,
+            page:1,
+            pageNumber:0,
             
         })
 
         const load=()=>{
             axios.get('/api/get/bestseller').then(({data})=>{
-                console.log(data);
+                console.log("load",data);
                 state.item=data;
+                state.total=data.totalElements;
             }).catch(()=>{
                 alert('에러가 발생했습니다.');
             });
         }
 
         const categoryBest=(e)=>{
-            axios.get(`/api/get/bestseller/genre?genre=${e}&size=10`).then(({data})=>{
-                console.log(data);
+            axios.get(`/api/get/bestseller/genre?genre=${e}`).then(({data})=>{
+                console.log("categoryBest",data);
                 state.item=data;
+                state.total=data.totalElements
+                
             }).catch(()=>{
                 alert('에러가 발생했습니다.');
             })
+        }
+
+        const handlePage=(pageNum)=>{
+            axios.get(`/api/get/bestseller?page=${pageNum-1}&size=10`).then(({data})=>{
+                console.log("handlePage", data);
+                state.item=data;
+                
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
         }
 
         load();
 
         return {
             state,
-            categoryBest
+            categoryBest,
+            handlePage
         }
     },
     computed:{

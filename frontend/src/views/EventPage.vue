@@ -111,6 +111,10 @@ export default {
         margin:0 auto;
         margin-bottom: 30px;
     }
+
+    #eventimg:hover{
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+    }
     
 
 </style>

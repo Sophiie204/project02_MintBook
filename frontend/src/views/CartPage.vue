@@ -7,6 +7,7 @@
                 <li><img src="../assets/Navigation/cart.png" alt=""></li>
                 <li id="maintitle">장바구니</li>
             </ul>
+            {{ state.item[0].bookid.bookName}}
             <table>
                 <tr>
                     <th>
@@ -19,7 +20,6 @@
                         <button class="button3">삭제</button>
                     </th>
                 </tr>
-
                 <tr id="table_bottom_tr" v-for="(item, idx) in state.list" :key="idx">
                     <td style="width:20px;">
                         <input type="checkbox" :id=item v-model="state.checked" :value="item" class="checkbox">
@@ -63,6 +63,7 @@
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
 import { reactive } from 'vue'
+import axios from 'axios'
 
 export default {
     
@@ -73,9 +74,20 @@ export default {
 
     setup () {
         const state = reactive({
-            list:["1","2","3","4","5","6","7","8","9","10"],
-            checked:[]
+            list:["1","2","3","4","5","6","7","8","9","10","11"],
+            checked:[],
+            item:[]
+            
         })
+
+        const load=()=>{
+            axios.get(`/api/get/cartitem/${2}`).then(({data})=>{
+                console.log(data);
+                state.item = data;
+            })
+        }
+
+        load();
 
         return {
             state,

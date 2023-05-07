@@ -6,8 +6,8 @@
             <div class="top_wrap">
                 <div class="top_top_wrap">
                     <div id="top_top_left">
-                        <p id="top_title">세이노의 가르침</p>
-                        <p id="top_author">세이노(지은이)  |  데이원  |  2023년 03월 02일</p>
+                        <p id="top_title">{{state.item.bookName}}</p>
+                        <p id="top_author">{{state.item.author}}(지은이)  |  {{state.item.publisher}}  |  {{state.item.pubDate}}</p>
                     </div>
                     <div id="top_top_right">
                         <img src="../assets/BookDetailPage/share.png" alt="share">
@@ -15,25 +15,25 @@
                 </div>
                 <div class="top_bottom_wrap">
                     <div class="top_bottom_left">
-                        <img src="../assets/MainPage/book5.jpg" alt="book">
+                        <img :src="state.item.img" alt="book">
                     </div>
                     <table class="top_bottom_right">
                         <tr>
                             <td class="right_left">정가</td>
-                            <td class="right_right">25,000원</td>
+                            <td class="right_right">{{Number(Math.round(state.item.price*0.011)*100).toLocaleString()}}원</td>
                         </tr>
                         <tr class="line">
                             <td class="right_left">판매가</td>
                             <td class="right_right">
-                                <label id="price">22,500원</label>
+                                <label id="price">{{Number(state.item.price).toLocaleString()}}원</label>
                                 <label id="discount">(10%)</label>
                             </td>
                         </tr>
                         <tr>
                             <td class="right_left">적립금</td>
                             <td class="right_right">
-                                <label>1,250원</label>
-                                <label id="point">(5%)</label>
+                                <label>{{Number(Math.round(state.item.price*0.05)*1).toLocaleString()}}p</label>
+                                <label id="point"> (5%)</label>
                             </td>
                         </tr>
                         <tr>
@@ -43,7 +43,7 @@
                         <tr class="line">
                             <td class="right_left">독자평점</td>
                             <td class="right_right">
-                                <label id="review">3.0</label><label>/5점</label>
+                                <label id="review">{{ state.item.star }}</label><label>/5점</label>
                             </td>
                         </tr>
                         <tr class="line"> 
@@ -70,40 +70,42 @@
             <div class="content">
                 <div class="aboutbook">
                     <p class="content_title">책소개</p>
-                    <p class="content_content">한국과 미국, 전 세계를 오가며 ‘사장을 가르치는 사장’으로 알려진 『돈의 속성』의 저자 김승호 회장의 신간이다. 평생 사장으로 살아온 그의 경영철학 모두를 10여 년에 걸쳐 정리해 온 그는, 이번 『사장학개론』 책을 통해 120가지 주제로 그 내용을 모두 담아 완성했다.지난 7년간 3천 명의 사장 제자들을 만나 사장학 수업을 진행하며 현실에서 겪는 다양한 문제에 대해, 사장들이 묻는 공통적인 어려움이 존재했으며 그 문제들을 목차로 구성해 방향제시를 더했다.한국KCA사장학교에 합격하고 저자를 기다리고 있는 사장들을 만나기 위해 미국에 거주하는 기업인인 저자는 일 년에 두 번, 한국을 방문해왔다. 하지만 한정된 기회와 한정된 인원으로 제한되는 상황이 지속돼 사장학 수업 내용 전체를 담아 『사장학개론』 책으로 출판을 결정하게 되었다.</p>
+                    <p class="content_content">{{ state.item.bookInfo }}</p>
                 </div>
                 <div class="aboutauthor">
                     <p class="content_title">작가정보</p>
-                    <p class="content_content">필명 세이노는 현재까지 믿고 있는 것들에 대해 No라고 말하라(Say No)는 뜻이다. 2023년 기준 순자산 천억 원대 자산가다. 1955년생. 의사의 장남으로 태어나 서너 살 유년기부터 아버지의 가르침을 받았다. 아버지가 전 재산을 사기로 모두 날린 후 사망하면서 친부모를 모두 여의고 고교시절부터 생활고에 크게 시달렸다.고교 3학년 때 건강과 가난 때문에 휴학하고 친구 아버님과 친구들의 투자를 받아 사업을 했으나 실패 후 복학하여 고교를 4년 만에 졸업하고 입대했다. 공군사병으로 복무하는 동안 군부대 부동산 관리 업무와 도서관 관장을 맡았고, 제대 후 영어공부에 몰두하여 미8군 내 메릴랜드대학 분교에 입학하였다. 학비를 벌고자 보따리 장사부터 시작하여 과외ㆍ입시영어학원ㆍ번역업 등을 했다.결혼 후에는 거의 십여 년 이상 쉬는 날 없이 밤늦도록 일과 공부에 몰두하면서 의류업ㆍ정보처리ㆍ컴퓨터ㆍ음향기기ㆍ유통업ㆍ무역업 등으로 자산을 모으기 시작했다. 그 자산을 외환투자ㆍ부동산경매ㆍ주식 등으로 증대시켰고 학연ㆍ혈연ㆍ지연ㆍ정치적 배경 없이 홀로 현재의 자산을 이룩했다.세계적인 다국적 기업의 아시아 지역 부사장직도 겸임하였고 사업상 70여 개국을 여행했다. 국내에서 경영하였던 회사들은 수출탑과 산업훈장을 받았으며, 인재경영대상후보로 오르기도 했다.2003년부터는 사업을 줄여 왔고 광범위한 독서ㆍ음악ㆍ영화감상을 즐긴다. 가장 좋아하는 것은 문제를 해결하는 것, 사람을 가르치고 깨우치는 것이며, 가장 싫어하는 것은 접대 술자리, 기업 정치가들, 부자인 척하는 자들의 블러핑. 매년 십억 원대의 소득세를 2000년까지 5년 이상 세이노 개인이 납부하였고 2001년부터는 가족 단위로 납부하고 있다.</p>
+                    <p class="content_content">{{state.item.authorInfo}}</p>
                 </div>
                 <div class="aboutinfo">
                     <p class="content_title">기본정보</p>
                     <ul class="content_content">
-                        <li>• ISBN: 9791188331888</li>
-                        <li>• 출판일: 2023년 03월 02일</li>
+                        <li>• ISBN: {{ state.item.isbn }}</li>
+                        <li>• 출판일: {{ state.item.pubDate }}</li>
                     </ul>
                 </div>
             </div>
             <div class="review_section">
                 <div class="review_title">
                     <label class="content_title">독자리뷰</label>
-                    <label id="review_cnt"> (716)</label>
+                    <label id="review_cnt"> ({{ state.item.reviews.length }})</label>
+                    {{ state.review }}
                 </div>
                 <div class="review_btn">
                     <div id="review_btn_left">
-                        <select name="" id="">
-                            <option value="">5점</option>
-                            <option value="">4점</option>
-                            <option value="">3점</option>
-                            <option value="">2점</option>
-                            <option value="">1점</option>
+                        <select name="" id="" v-model="state.review.star">
+                            <option value="5" selected>5점</option>
+                            <option value="4">4점</option>
+                            <option value="3">3점</option>
+                            <option value="2">2점</option>
+                            <option value="1">1점</option>
                         </select>
+                        <input type="text" id="writer" v-model="state.review.writer" placeholder="리뷰를 남기실 이름을 입력해주세요.">
                     </div>
                     <div id="review_btn_right">
-                        <button id="r_register_btn">리뷰등록</button>
+                        <button id="r_register_btn" @click="addReview()">리뷰등록</button>
                     </div>
                 </div>
-                <textarea name="" id="" rows="10" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송문의 등의 글은 임의 삭제될 수 있습니다."></textarea>
+                <textarea name="" id="" rows="10" v-model="state.review.content" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송문의 등의 글은 임의 삭제될 수 있습니다."></textarea>
                 <div class="reviewlist_top">
                     <div class="reviewlist_top_left">
                         <label class="reviewpoint" id="pointred">4.5</label>
@@ -118,54 +120,14 @@
                  </div>
                 </div>
                 <table class="reviewlist">
-                    <tr>
+                    <tr v-for="(tmp, idx) in state.item.reviews" :key="idx">
                         <td class="reviewlist_left">
-                            <label class="reviewpoint">4.5</label>
+                            <label class="reviewpoint">{{ tmp.star }}.0</label>
                             <label class="pointtotal">/5.0</label>
                         </td>
                         <td class="reviewlist_right">
-                            <p class="reviewer">wlg**** | 2023.03.31</p>
-                            <p>세이노의 가르침 덕분에 인생의 길이 달라졌습니다.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="reviewlist_left">
-                            <label class="reviewpoint">4.5</label>
-                            <label class="pointtotal">/5.0</label>
-                        </td>
-                        <td class="reviewlist_right">
-                            <p class="reviewer">wlg**** | 2023.03.31</p>
-                            <p>세이노의 가르침 덕분에 인생의 길이 달라졌습니다.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="reviewlist_left">
-                            <label class="reviewpoint">4.5</label>
-                            <label class="pointtotal">/5.0</label>
-                        </td>
-                        <td class="reviewlist_right">
-                            <p class="reviewer">wlg**** | 2023.03.31</p>
-                            <p>세이노의 가르침 덕분에 인생의 길이 달라졌습니다.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="reviewlist_left">
-                            <label class="reviewpoint">4.5</label>
-                            <label class="pointtotal">/5.0</label>
-                        </td>
-                        <td class="reviewlist_right">
-                            <p class="reviewer">wlg**** | 2023.03.31</p>
-                            <p>세이노의 가르침 덕분에 인생의 길이 달라졌습니다.</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="reviewlist_left">
-                            <label class="reviewpoint">4.5</label>
-                            <label class="pointtotal">/5.0</label>
-                        </td>
-                        <td class="reviewlist_right">
-                            <p class="reviewer">wlg**** | 2023.03.31</p>
-                            <p>세이노의 가르침 덕분에 인생의 길이 달라졌습니다.</p>
+                            <p class="reviewer">{{ tmp.writer }} | {{tmp.regDate}}</p>
+                            <p>{{tmp.content}}</p>
                         </td>
                     </tr>
                 </table>
@@ -242,26 +204,59 @@
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
 import { reactive, ref } from 'vue'
+import axios from 'axios'
+import { useRoute } from 'vue-router'
 
 export default {
-    
+
     components:{
     HeaderPage:HeaderPage,
     FooterPage:FooterPage
     },
 
     setup () {
+        
+        const route = useRoute();
+
         const state = reactive({
             num: ref(1),
+            item:[],
+            no:Number(route.query.no),
+            review:{
+                memberid:"1",
+                writer:"",
+                star:5,
+                content:"",
+            }
         })
 
         const handleChange = (value) => {
             console.log(value)
         }
 
+        const handleData = () => {
+            axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const addReview = () =>{
+            axios.post(`/api/add/review?id=${state.no}`,state.review).then((res)=>{
+                console.log(res);
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        handleData();
+
         return {
             state,
-            handleChange
+            handleChange,
+            addReview
         }
     }
 }
@@ -452,6 +447,16 @@ export default {
         display: grid;
         grid-template-columns: 1fr 1fr;
         margin-bottom: 20px;
+    }
+
+    #writer{
+        width: 300px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid black;
+        margin-left: 20px;
+        padding-left: 10px;
+        outline: none;
     }
 
     button{
