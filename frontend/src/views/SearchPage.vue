@@ -5,7 +5,7 @@
             <div class="headerpage"></div>
             <ul class="search_result_wrap">
                 <li id="result">검색결과</li>
-                <li class="total">(전체<label class="total" id="num">2,635</label>건)</li>
+                <li class="total">(전체<label class="total" id="num">{{ state.item.totalElements }}</label>건)</li>
             </ul>
             {{ state.checked }}
             <table>
@@ -27,22 +27,22 @@
                     </th>
                 </tr>
 
-                <tr id="table_bottom_tr" v-for="(item, idx) in state.list" :key="idx">
+                <tr id="table_bottom_tr" v-for="(tmp, idx) in state.item.content" :key="idx">
                     <td style="width:20px;">
-                        <input type="checkbox" :id=item v-model="state.checked" :value="item" class="checkbox">
-                        <label :for="item"></label>
+                        <input type="checkbox" :id=tmp.id v-model="state.checked" :value="tmp.id" class="checkbox">
+                        <label :for="tmp.id"></label>
                     </td>
                     <td style="width:150px; text-align: center;">
-                        <img src="../assets/MainPage/book1.jpg" alt="boo1" id="img">
+                        <img :src="tmp.img" alt="boo1" id="img"  @click="handleContent(tmp.id, tmp.genre)">
                     </td>
                     <td id="price_wrap">
-                        <p id="title">세이노의 가르침</p>
-                        <p id="author">세이노·데이원·2023.03.02</p>
+                        <p id="title" @click="handleContent(tmp.id, tmp.genre)">{{tmp.bookName}}</p>
+                        <p id="author">{{tmp.author}}·{{tmp.publisher}}·{{tmp.pubDate}}</p>
                         <label id="dc">10%</label>
-                        <label id="dc_price">6,480원</label>
-                        <label id="price">7,200원</label>
-                        <label id="point">|360p</label>
-                        <div id="description">2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고</div>
+                        <label id="dc_price">{{Number(tmp.price).toLocaleString()}}원</label>
+                        <label id="price">{{Number(Math.round(tmp.price*0.011)*100).toLocaleString()}}원</label>
+                        <label id="point">|{{Number(Math.round(tmp.price*0.05)*1).toLocaleString()}}p</label>
+                        <div id="description" @click="handleContent(tmp.id, tmp.genre)">{{tmp.bookInfo}}</div>
                     </td>
                     <td style="width:150px; text-align: right;">
                         <button class="button3">장바구니</button><br>
@@ -53,7 +53,7 @@
 
             </table>
             <div class="example-pagination-block">
-                <el-pagination layout="prev, pager, next" :total="100"/>
+                <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleSearchData"/>
             </div>
             <div>
                 <el-backtop :right="70" :bottom="70" style="color: #3DDCA3;"/>
@@ -67,6 +67,8 @@
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
 import { reactive } from 'vue'
+import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
     
@@ -76,22 +78,51 @@ export default {
     },
 
     setup () {
+
+        const router = useRouter();
+        const route = useRoute();
+
         const state = reactive({
-            list:["1","2","3","4","5","6","7","8","9","10"],
-            checked:[]
+            checked:[],
+            page:Number(route.query.page),
+            text:String(route.query.searchTerm),
+            item:[],
+            total:0,
         })
+
+        const handleSearchData=(pageNum)=>{
+            axios.get(`/api/get/search?searchTerm=${state.text}&page=${pageNum-1}`).then(({data})=>{
+                console.log("handleSearchData",data);
+                state.item = data;
+                state.total = data.totalElements;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleContent=(tmp1, tmp2)=>{
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
+        }
+
+        handleSearchData();
 
         return {
             state,
+            handleSearchData,
+            handleContent
         }
     },
     computed:{
         checkAll:{
             get:function(){
-                return this.state.list.length === this.state.checked.length;
+                return this.state.item.totalElements === this.state.checked.length;
             },
             set:function(e){
-                this.state.checked = e ? this.state.list : [];
+                let tmp_id = [];
+                for(let tmp of this.state.item.content){
+                    tmp_id.push(tmp.id);//[1,2,3,4,5,6]
+                }
+                this.state.checked = e ? tmp_id : [];
             }
         }
     }
@@ -269,19 +300,23 @@ export default {
     #img{
         width: 90px;
         border: 0.5px solid #C6C4C4;
+        cursor: pointer;
     }
 
     #title{
         font-size: 15px;
         font-weight: bold;
         margin-bottom: 3px;
+        cursor: pointer;
     }
 
     #author{
         font-size: 13px;
         color: #998F8F;
         margin-bottom: 5px;
+        cursor: pointer;
     }
+
 
     #dc{
         font-size: 13px;
@@ -312,6 +347,11 @@ export default {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        cursor: pointer;
+    }
+
+    #description:hover{
+        text-decoration: underline;
     }
 
     /* 페이지네이션 */

@@ -35,16 +35,16 @@
                                 <label :for="tmp.id"></label>
                             </td>
                             <td style="width:150px; text-align: center;">
-                                <img :src="tmp.img" alt="boo1" id="img">
+                                <img :src="tmp.img" alt="boo1" id="img" @click="handleContent(tmp.id, tmp.genre)">
                             </td>
                             <td id="price_wrap">
-                                <p id="title">{{ tmp.bookName }}</p>
+                                <p id="title" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookName }}</p>
                                 <p id="author">{{tmp.author}}·{{tmp.publisher}}·{{ tmp.pubDate }}</p>
                                 <label id="dc">10%</label>
                                 <label id="dc_price">{{Number(tmp.price).toLocaleString()}}원</label>
                                 <label id="price">{{Number(Math.round(tmp.price*0.011)*100).toLocaleString()}}원</label>
-                                <label id="point"> | {{Math.round(tmp.price*0.05)}}p</label>
-                                <div id="description">{{ tmp.bookInfo }}</div>
+                                <label id="point"> | {{Number(Math.round(tmp.price*0.05)*1).toLocaleString()}}p</label>
+                                <div id="description" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookInfo }}</div>
                             </td>
                             <td style="width:150px; text-align: right;">
                                 <button class="button3">장바구니</button><br>
@@ -72,6 +72,7 @@ import FooterPage from '@/components/FooterPage.vue'
 import axios from 'axios'
 
 import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
 
 export default {
@@ -82,6 +83,8 @@ export default {
     },
 
     setup () {
+        const router = useRouter();
+        
         const state = reactive({
             categorylist:[{categoryname:"소설", categoryid:1},
                           {categoryname:"시/에세이", categoryid:2},
@@ -144,12 +147,17 @@ export default {
             });
         }
 
+        const handleContent=(tmp1, tmp2)=>{
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
+        }
+
         load();
 
         return {
             state,
             categoryBest,
-            handlePage
+            handlePage,
+            handleContent
         }
     },
     computed:{
@@ -367,12 +375,14 @@ export default {
     #img{
         width: 90px;
         border: 0.5px solid #C6C4C4;
+        cursor: pointer;
     }
 
     #title{
         font-size: 15px;
         font-weight: bold;
         margin-bottom: 3px;
+        cursor: pointer;
     }
 
     #author{
@@ -410,6 +420,11 @@ export default {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        cursor: pointer;
+    }
+
+    #description:hover{
+        text-decoration: underline;
     }
 
     /* 페이지네이션 */

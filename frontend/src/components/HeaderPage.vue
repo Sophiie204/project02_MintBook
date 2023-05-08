@@ -10,8 +10,8 @@
           </li>
           <li>
             <div id="search_wrap">
-              <input type="text" v-model="state.searchtext" placeholder="2023 부커상 후보! 천명관 <고래>" />
-              <img src="../assets/Navigation/search.png" alt="search">
+              <input type="text" v-model="state.searchtext" placeholder="2023 부커상 후보! 천명관 <고래>" @keyup.enter="handleSearch()"/>
+              <img src="../assets/Navigation/search.png" alt="search" @click="handleSearch()">
             </div>
           </li>
         </ul>
@@ -75,9 +75,13 @@
 
 <script>
 import { reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 export default {
   setup () {
+
+    const router = useRouter();
+    
     const state = reactive({
       searchtext:"",
       modalOpen: false,
@@ -87,9 +91,16 @@ export default {
       state.modalOpen=!state.modalOpen;
     }
 
+    const handleSearch=()=>{
+      state.searchtext=state.searchtext.trim();
+      state.page=1;
+      router.push({path:'/search', query:{searchTerm:state.searchtext}});
+    }
+
     return {
       state,
-      setModal
+      setModal,
+      handleSearch
     }
   }
 }
@@ -203,6 +214,7 @@ export default {
       position: absolute;
       top:50%;
       margin-top: -10.5px;
+      cursor: pointer;
     }
 
     #nav_right_wrap{

@@ -58,7 +58,7 @@
                     <div class="content_bottom">
                         <div class="content_book_wrap" v-for="(tmp, idx) in state.bestseller.content" :key="idx">
                             <p class="c_ranking">{{ idx+1 }}.</p>
-                            <img :src="tmp.img" alt="book1" class="c_image" @click="handleContent(tmp.id)" style="cursor: pointer;">
+                            <img :src="tmp.img" alt="book1" class="c_image" @click="handleContent(tmp.id, tmp.genre)">
                             <p class="c_title">{{ tmp.bookName }}</p>
                             <p class="c_author">{{tmp.author}}·{{ tmp.publisher }}</p>
                         </div>
@@ -81,8 +81,8 @@
                     </div>
                     <div class="content_bottom">
                         <div class="content_book_wrap" v-for="(tmp, idx) in state.new.content" :key="idx">
-                            <img :src="tmp.img" alt="book1" class="c_image">
-                            <p class="c_title">{{ tmp.bookName }}</p>
+                            <img :src="tmp.img" alt="book1" class="c_image" @click="handleContent(tmp.id, tmp.genre)">
+                            <p class="c_title" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookName }}</p>
                             <p class="c_author">{{tmp.author}}·{{ tmp.publisher }}</p>
                         </div>
                     </div>
@@ -104,8 +104,8 @@
                     </div>
                     <div class="content_bottom">
                         <div class="content_book_wrap" v-for="(tmp, idx) in state.editor.content" :key="idx">
-                            <img :src="tmp.bookid.img" alt="book1" class="c_image">
-                            <p class="c_title">{{ tmp.bookid.bookName }}</p>
+                            <img :src="tmp.bookid.img" alt="book1" class="c_image" @click="handleContent(tmp.id, tmp.genre)">
+                            <p class="c_title" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookid.bookName }}</p>
                             <p class="c_author">{{ tmp.bookid.author }}·{{ tmp.bookid.publisher }}</p>
                         </div>
                     </div>
@@ -170,8 +170,8 @@ export default {
             });
         }
 
-        const handleContent=(tmp)=>{
-            router.push({path:'/book', query:{no:tmp}})
+        const handleContent=(tmp1, tmp2)=>{
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
         }
         
         bestseller();
@@ -314,6 +314,7 @@ export default {
     width: 210px;
     height: 297px;
     border: 0.5px solid #C6C4C4;
+    cursor: pointer;
 }
 
 .c_image:hover{
@@ -324,6 +325,7 @@ export default {
     font-size: 15px;
     width: 210px;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .c_author{

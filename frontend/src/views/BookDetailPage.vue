@@ -43,7 +43,7 @@
                         <tr class="line">
                             <td class="right_left">독자평점</td>
                             <td class="right_right">
-                                <label id="review">{{ state.item.star }}</label><label>/5점</label>
+                                <label id="review">{{ average.toFixed(1) }}</label><label>/5점</label>
                             </td>
                         </tr>
                         <tr class="line"> 
@@ -108,7 +108,7 @@
                 <textarea name="" id="" rows="10" v-model="state.review.content" placeholder="내용을 10자 이상 입력해 주세요. 주제와 무관한 댓글, 악플, 배송문의 등의 글은 임의 삭제될 수 있습니다."></textarea>
                 <div class="reviewlist_top">
                     <div class="reviewlist_top_left">
-                        <label class="reviewpoint" id="pointred">4.5</label>
+                        <label class="reviewpoint" id="pointred">{{ average.toFixed(1) }}</label>
                         <label class="pointtotal">/5.0</label>
                         의 평점을 받았어요!
                     </div>
@@ -120,7 +120,7 @@
                  </div>
                 </div>
                 <table class="reviewlist">
-                    <tr v-for="(tmp, idx) in state.item.reviews" :key="idx">
+                    <tr v-for="(tmp, idx) in state.reviewlist.content" :key="idx">
                         <td class="reviewlist_left">
                             <label class="reviewpoint">{{ tmp.star }}.0</label>
                             <label class="pointtotal">/5.0</label>
@@ -132,36 +132,16 @@
                     </tr>
                 </table>
                 <div class="example-pagination-block">
-                    <el-pagination layout="prev, pager, next" :total="100"/>
+                    <el-pagination layout="prev, pager, next" :total="state.total" @current-change="reviewByNew"/>
                  </div>
             </div>
             <div class="recommend_section">
                 <p class="content_title" id="recommend_title">이런 책도 추천해요!</p>
                 <div class="content_bottom">
-                    <div class="content_book_wrap">
-                        <img src="../assets/MainPage/book1.jpg" alt="book1" class="c_image">
-                        <p class="c_title">세이노의 가르침</p>
-                        <p class="c_author">세이원·데이원</p>
-                    </div>
-                    <div class="content_book_wrap">
-                        <img src="../assets/MainPage/book2.jpg" alt="book2" class="c_image">
-                        <p class="c_title">세이노의 가르침</p>
-                        <p class="c_author">세이원·데이원</p>
-                    </div>
-                    <div class="content_book_wrap">
-                        <img src="../assets/MainPage/book3.jpg" alt="book3" class="c_image">
-                        <p class="c_title">세이노의 가르침</p>
-                        <p class="c_author">세이원·데이원</p>
-                    </div>
-                    <div class="content_book_wrap">
-                        <img src="../assets/MainPage/book4.jpg" alt="book4" class="c_image">
-                        <p class="c_title">세이노의 가르침</p>
-                        <p class="c_author">세이원·데이원</p>
-                    </div>
-                    <div class="content_book_wrap">
-                        <img src="../assets/MainPage/book5.jpg" alt="book5" class="c_image">
-                        <p class="c_title">세이노의 가르침</p>
-                        <p class="c_author">세이원·데이원</p>
+                    <div class="content_book_wrap" v-for="(tmp,idx) in state.recommend" :key="idx">
+                        <img :src="tmp.img" alt="book1" class="c_image" @click="handleContent(tmp.id, tmp.genre)">
+                        <p class="c_title" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookName }}</p>
+                        <p class="c_author">{{tmp.author}}·{{tmp.publisher}}</p>
                     </div>
                 </div>
             </div>
@@ -205,7 +185,7 @@ import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
 import { reactive, ref } from 'vue'
 import axios from 'axios'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
 
@@ -217,17 +197,30 @@ export default {
     setup () {
         
         const route = useRoute();
+        const router = useRouter();
 
         const state = reactive({
             num: ref(1),
             item:[],
             no:Number(route.query.no),
+            genre:Number(route.query.genre),
             review:{
                 memberid:"1",
                 writer:"",
                 star:5,
                 content:"",
-            }
+            },
+            reviewlist:{
+                content:"",
+                writer:"",
+                regDate:"",
+                star:0,
+            },
+            recommend:[],
+            total:0,
+            
+
+            
         })
 
         const handleChange = (value) => {
@@ -238,6 +231,7 @@ export default {
             axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
                 console.log("handleData",data);
                 state.item=data;
+                state.genre=data.genre;
             }).catch(()=>{
                 alert('에러가 발생했습니다.');
             });
@@ -246,17 +240,69 @@ export default {
         const addReview = () =>{
             axios.post(`/api/add/review?id=${state.no}`,state.review).then((res)=>{
                 console.log(res);
+                window.alert('리뷰가 등록됐습니다.');
+                router.go(0);
             }).catch(()=>{
                 alert('에러가 발생했습니다.');
             });
         }
 
+        const reviewByNew = (pageNum) =>{
+            axios.get(`/api/get/review?id=${state.no}&page=${pageNum-1}`).then(({data})=>{
+                console.log("reviewByNew",data);
+                state.reviewlist=data;
+                state.total=data.totalElements
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleRecommend = () =>{
+            axios.get(`/api/get/bestseller/genre?genre=${state.genre}&size=5`).then(({data})=>{
+                console.log("handleRecommend",data);
+                state.recommend = data.content;
+            })
+        }
+
+        const handleContent=(tmp1, tmp2)=>{
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}});
+            
+        }
+
+
         handleData();
+        reviewByNew();
+        handleRecommend();
 
         return {
             state,
             handleChange,
-            addReview
+            addReview,
+            reviewByNew,
+            handleContent
+        }
+    },
+    computed:{
+
+        average(){
+            
+            //console.log("reviewtotal", this.state.item.reviews[0].star);
+            //console.log(this.state.reviewlist.content[i].star);
+
+            let tmp_star = [];
+            for(let tmp of this.state.item.reviews){
+                tmp_star.push(tmp.star);
+            }
+            //onsole.log("starObj",tmp_star);
+
+             let sum = 0;
+            
+             for(let i=0;i<tmp_star.length;i++){
+                 sum += tmp_star[i];
+             }
+
+             return sum/tmp_star.length;
+
         }
     }
 }
@@ -594,15 +640,25 @@ export default {
 
     .c_image{
         width: 210px;
+        height: 297px;
         border: 0.5px solid #C6C4C4;
+        cursor: pointer;
+    }
+
+    .c_image:hover{
+        box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
     }
 
     .c_title{
         font-size: 15px;
+        width: 210px;
+        margin-top: 10px;
+        cursor: pointer;
     }
 
     .c_author{
         font-size: 13px;
+        width: 210px;
         color: #998F8F;
     }
 
