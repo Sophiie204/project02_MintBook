@@ -11,62 +11,68 @@
                         <tr>
                             <th scope="row">도서명</th>
                             <td colspan="3">
-                                <input type="text">
+                                <input type="text" v-model="state.item.bookName">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">저자명</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.author">
                             </td>
                             <th scope="row">출판사</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.publisher">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">출판일</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.pubDate">
                             </td>
-                            <th scope="row">정가</th>
+                            <th scope="row">가격</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.price">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">ISBN</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.isbn">
                             </td>
                             <th scope="row">카테고리</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.genre">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">판매수</th>
-                            <td>13</td>
-                            <th scope="row">재고수</th>
-                            <td>5</td>
+                            <td colspan="3">{{ state.item.hit }}</td>
+                            <!-- <th scope="row">재고수</th>
+                            <td>5</td> -->
+                        </tr>
+                        <tr>
+                            <th scope="row">이미지 URL</th>
+                            <td colspan="3">
+                                <input type="text" v-model="state.item.img">
+                            </td>
                         </tr>
                         <tr>
                             <th scope="row">작가소개</th>
                             <td colspan="3">
-                                <textarea></textarea>
+                                <textarea v-model="state.item.authorInfo"></textarea>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">책소개</th>
                             <td colspan="3">
-                                <textarea></textarea>
+                                <textarea v-model="state.item.bookInfo"></textarea>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="register_wrap">
-                    <button>확인</button>
-                    <button>취소</button>
+                    <button @click="handleUpdate(state.item.id)">확인</button>
+                    <button @click="handleCancel(state.item.id)">취소</button>
                 </div>
             </div>
         </div>
@@ -76,6 +82,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -83,11 +91,53 @@ export default {
     },
 
     setup () {
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            
+            no:Number(route.query.no),
+            item:{
+                bookName:"",
+                author:"",
+                img:"",
+                publisher:"",
+                pubDate:"",
+                price:null,
+                isbn:"",
+                genre:null,
+                hit:null,
+                authorInfo:"",
+                bookInfo:""
+            }
         })
 
-        return {state}
+        const handleData = () => {
+            axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleUpdate=(tmp)=>{
+            axios.put(`/api/admin/book/edit?id=${state.no}`,state.item).then((res)=>{
+                console.log(res);
+                window.alert('도서정보가 수정됐습니다.');
+                router.push({path:'/admin/book/detail', query:{no:tmp}})
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleCancel=(tmp)=>{
+            router.push({path:'/admin/book/detail', query:{no:tmp}})
+        }
+
+        handleData();
+
+        return {state, handleUpdate, handleCancel}
     }
 }
 </script>
@@ -173,11 +223,12 @@ import
     }
 
     th{
+        width:150px;
         background: rgb(184, 184, 184);
     }
 
     input[type="text"]{
-        width: 300px;
+        width: 90%;
         border-radius: 5px;
         border: 0.5px solid rgb(184, 184, 184);
         padding-left: 10px;
@@ -185,9 +236,14 @@ import
 
     textarea{
         width: 90%;
+        height: 200px;
         border-radius: 5px;
         border: 0.5px solid rgb(184, 184, 184);
         padding-left: 10px;
+        resize: none;
+        outline: none;
+        padding: 10px;
+        box-sizing:border-box;
     }
     
     #register_wrap{

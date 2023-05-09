@@ -18,18 +18,18 @@
                         <tr>
                             <td>제목</td>
                             <td>
-                                <input type="text" placeholder="제목을 입력해주세요.">
+                                <input type="text" v-model="state.item.title" placeholder="제목을 입력해주세요.">
                             </td>
                         </tr>
                         <tr>
                             <td>내용</td>
                             <td>
-                                <textarea name="" id="" placeholder="문의하실 내용을 입력해주세요."></textarea>
+                                <textarea name="" id="" v-model="state.item.content" placeholder="문의하실 내용을 입력해주세요."></textarea>
                             </td>
                         </tr>
                     </table>
                     <div id="btn_wrap">
-                        <button>등록</button>
+                        <button @click="handleQ()">등록</button>
                         <button><a href="/cs">취소</a></button>
                     </div>
                 </div>
@@ -45,6 +45,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import { reactive } from 'vue'
+import axios from 'axios'
+import { useRouter } from 'vue-router'
 
 export default {
 
@@ -54,9 +57,32 @@ export default {
     },
 
     setup () {
-        
 
-        return {}
+        const router = useRouter();
+        
+        const state = reactive({
+            id:2,
+            item:{
+                title:"",
+                content:""
+            },
+        })
+        
+        const handleQ = () =>{
+            axios.post(`/api/add/Qna/${state.id}`,state.item).then((res)=>{
+                console.log(res);
+                window.alert('문의가 등록됐습니다.');
+                router.push('/cs');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+
+        return {
+            state,
+            handleQ
+        }
     }
 }
 </script>

@@ -19,13 +19,13 @@
                             <p class="box_title">1:1문의</p>
                             <div id="divide_left">
                                 <div>
-                                    <a href="*">
+                                    <a href="/cs/register">
                                         <img src="../assets/CSPage/question.png" alt="" id="img">
                                         <p>1:1문의</p>
                                     </a>
                                 </div>
                                 <div>
-                                    <a href="*">
+                                    <a href="faq">
                                         <img src="../assets/CSPage/faq.png" alt="" id="img">
                                     <p>자주 묻는 질문</p>
                                     </a>

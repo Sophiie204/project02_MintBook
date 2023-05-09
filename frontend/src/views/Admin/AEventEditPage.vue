@@ -46,6 +46,7 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -53,8 +54,11 @@ export default {
     },
 
     setup () {
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+
         })
 
         return {state}

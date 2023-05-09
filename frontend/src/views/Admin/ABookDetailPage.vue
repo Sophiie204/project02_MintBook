@@ -6,44 +6,44 @@
             </div>
             <div id="content_wrap">
                 <p id="maintitle">도서 상세</p>
-                <button id="edit">수정</button>
+                <button id="edit" @click="handleEdit(state.item.id)">수정</button>
                 <table class="table">
                     <tbody>
                         <tr>
                             <th scope="row">도서명</th>
-                            <td colspan="3">불행한 당신을 위하여</td>
+                            <td colspan="3">{{ state.item.bookName}}</td>
                         </tr>
                         <tr>
                             <th scope="row">저자명</th>
-                            <td>김다인</td>
+                            <td>{{ state.item.author}}</td>
                             <th scope="row">출판사</th>
-                            <td>팩토리나인</td>
+                            <td>{{ state.item.publisher}}</td>
                         </tr>
                         <tr>
                             <th scope="row">출판일</th>
-                            <td>2023-03-09</td>
+                            <td>{{ state.item.pubDate}}</td>
                             <th scope="row">정가</th>
-                            <td>12,900원</td>
+                            <td>{{Number(state.item.price).toLocaleString()}}원</td>
                         </tr>
                         <tr>
                             <th scope="row">ISBN</th>
-                            <td>129312124819</td>
+                            <td>{{ state.item.isbn}}</td>
                             <th scope="row">카테고리</th>
-                            <td>자기계발</td>
+                            <td>{{ state.item.genre}}</td>
                         </tr>
                         <tr>
                             <th scope="row">판매수</th>
-                            <td>13</td>
-                            <th scope="row">재고수</th>
-                            <td>5</td>
+                            <td colspan="3">{{ state.item.hit}}</td>
+                            <!-- <th scope="row">재고수</th>
+                            <td>5</td> -->
                         </tr>
                         <tr>
                             <th scope="row">작가소개</th>
-                            <td colspan="3">작가소개작가소개작가소개작가소개작가소개작가소개작가소개</td>
+                            <td colspan="3">{{ state.item.authorInfo}}</td>
                         </tr>
                         <tr>
                             <th scope="row">책소개</th>
-                            <td colspan="3">책소개책소개책소개책소개책소개책소개책소개책소개책소개책소개</td>
+                            <td colspan="3">{{ state.item.bookInfo}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -55,6 +55,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     components:{
@@ -62,11 +64,34 @@ export default {
     },
 
     setup () {
+        
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            item:[],
+            no:Number(route.query.no)
         })
 
-        return {state}
+        const handleData = () => {
+            axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleEdit=(tmp)=>{
+            router.push({path:'/admin/book/edit', query:{no:tmp}})
+        }
+
+        handleData();
+
+        return {
+            state,
+            handleEdit
+        }
     }
 }
 </script>
@@ -138,6 +163,7 @@ import
     }
 
     th{
+        width:150px;
         background: rgb(184, 184, 184);
     }
     

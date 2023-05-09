@@ -6,19 +6,19 @@
             </div>
             <div id="content_wrap">
                 <p id="maintitle">도서관리</p>
-                <label>
+                <!-- <label>
                     <select>
                         <option value="title">도서명</option>
                         <option value="author">저자명</option>
                         <option value="isbn">ISBN</option>
                         <option value="publisher">출판사</option>
                     </select>
-                </label>
+                </label> -->
                 <label>
-                    <input type="text">
+                    <input type="text" v-model="state.text" @keyup.enter="handleSearch()">
                 </label>
-                <button id="search" @click="BookSearch()">검색</button>
-                <button id="register">도서등록</button>
+                <button id="search" @click="handleSearch()">검색</button>
+                <button id="register"><a href="/admin/book/register">도서등록</a></button>
                 <table class="table">
                     <thead>
                         <tr>
@@ -28,25 +28,23 @@
                             <th scope="col">저자명</th>
                             <th scope="col">출판사</th>
                             <th scope="col">출판일</th>
-                            <th scope="col">재고수</th>
-                            <th scope="col">정가</th>
+                            <th scope="col">가격</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="tmp of state.num" :key="tmp">
-                            <th scope="row">{{ tmp }}</th>
-                            <td>98746565163521</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>김다인</td>
-                            <td>팩토리나인</td>
-                            <td>2023-03-09</td>
-                            <td>5</td>
-                            <td>12,900원</td>
+                        <tr v-for="(tmp,idx) in state.item.content" :key="idx">
+                            <th scope="row">{{ idx+1 }}</th>
+                            <td>{{ tmp.isbn }}</td>
+                            <td @click="handleContent(tmp.id)" style="cursor: pointer;">{{ tmp.bookName }}</td>
+                            <td>{{ tmp.author }}</td>
+                            <td>{{ tmp.publisher }}</td>
+                            <td>{{ tmp.pubDate }}</td>
+                            <td>{{Number(tmp.price).toLocaleString()}}원</td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="pagination">
-                    <el-pagination layout="prev, pager, next" :total="50" />
+                    <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData" />
                 </div>
             </div>
         </div>
@@ -56,7 +54,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
-import router from '@/router';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -64,17 +63,41 @@ export default {
     },
 
     setup () {
+
+        const router = useRouter();
+                
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            item:[],
+            total:0,
+            text:"",
         })
 
-        const BookSearch=()=>{
-            router.push("/admin/book/search");
+        const handleData=(pageNum)=>{
+            axios.get(`/api/admin/get/search?page=${pageNum-1}`).then(({data})=>{
+                console.log(data);
+                state.item = data;
+                state.total = data.totalElements;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
         }
+
+        const handleSearch=()=>{
+            state.text=state.text.trim();
+            router.push({path:'/admin/book/search', query:{searchTerm:state.text}});
+        }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/admin/book/detail', query:{no:tmp}})
+        }
+
+        handleData();
 
         return {
             state,
-            BookSearch
+            handleSearch,
+            handleData,
+            handleContent
         }
     }
 }
@@ -140,6 +163,11 @@ import
     #register{
         margin-left: 50px;
         float:right;
+    }
+
+    #register > a {
+        color: white;
+        font-weight: normal;
     }
 
     /*콘텐츠 하단 영역 */

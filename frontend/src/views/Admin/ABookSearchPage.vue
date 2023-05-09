@@ -5,9 +5,9 @@
                 <admin-menu-page></admin-menu-page>
             </div>
             <div id="content_wrap">
-                <p id="maintitle">출판사:"팩토리나인"</p>
-                <p id="searchtotal">검색결과 8건</p>
-                <button id="register">도서등록</button>
+                <p id="maintitle">검색어:"{{ state.text }}"</p>
+                <p id="searchtotal">검색결과 {{state.item.totalElements}}건</p>
+                <button id="register"><a href="/admin/book/register">도서등록</a></button>
                 <table class="table">
                     <thead>
                         <tr>
@@ -17,23 +17,24 @@
                             <th scope="col">저자명</th>
                             <th scope="col">출판사</th>
                             <th scope="col">출판일</th>
-                            <th scope="col">재고수</th>
-                            <th scope="col">정가</th>
+                            <th scope="col">가격</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="tmp of state.num" :key="tmp">
-                            <th scope="row">{{ tmp }}</th>
-                            <td>98746565163521</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>김다인</td>
-                            <td>팩토리나인</td>
-                            <td>2023-03-09</td>
-                            <td>5</td>
-                            <td>12,900원</td>
+                        <tr v-for="(tmp,idx) of state.item.content" :key="idx">
+                            <th scope="row">{{ idx+1 }}</th>
+                            <td>{{ tmp.isbn }}</td>
+                            <td @click="handleContent(tmp.id)" style="cursor: pointer;">{{ tmp.bookName }}</td>
+                            <td>{{ tmp.author }}</td>
+                            <td>{{ tmp.publisher }}</td>
+                            <td>{{ tmp.pubDate }}</td>
+                            <td>{{Number(tmp.price).toLocaleString()}}원</td>
                         </tr>
                     </tbody>
                 </table>
+                <div id="pagination">
+                    <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData" />
+                </div>
             </div>
         </div>
     </div>
@@ -42,6 +43,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -49,11 +52,35 @@ export default {
     },
 
     setup () {
+
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            num:["1","2","3","4","5","6","7","8","9","10"],
+            total:0,
+            item:[],
+            text:String(route.query.searchTerm),
         })
 
-        return {state}
+        const handleData=(pageNum)=>{
+            axios.get(`/api/admin/get/search?searchTerm=${state.text}&page=${pageNum-1}`).then(({data})=>{
+                console.log("handleSearchData",data);
+                console.log(data);
+                state.item = data;
+                state.total = data.totalElements;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/admin/book/detail', query:{no:tmp}})
+        }
+
+        handleData();
+
+        return {state, handleContent}
     }
 }
 </script>
@@ -122,11 +149,21 @@ import
         float: right;
     }
 
+    #register > a {
+        color: white;
+        font-weight: normal;
+    }
+
     /*콘텐츠 하단 영역 */
 
     .table{
         width: 100%;
         margin-top:30px;
+    }
+
+    #pagination{
+        display: flex;
+        justify-content: center;
     }
     
 

@@ -16,12 +16,11 @@
                     <div id="section">
                         <p id="maintitle">공지사항</p>
                         <div id="notice_title">
-                            <p id="title_left">&lt;배송비 정책 변경 안내&gt;</p>
-                            <p id="title_right">2023.02.12</p>
+                            <p id="title_left">&lt;{{state.item.title }}&gt;</p>
+                            <p id="title_right">{{ state.item.regDate }}</p>
                         </div>
                         <div id="notice_content">
-                            <p>안녕하세요. 꿈을 키우는 세상 교보문고입니다.교보문고 서비스를 이용해 주시는 고객님께 감사드립니다.교보문고 영상정보처리기기 운영관리방침이 다음과 같이 일부 개정 될 예정으로 변경내용을 사전 공지하오니 서비스 이용에 참조하시기 바랍니다.1. 개정 사유ㅤ- 보관기간 변경</p>
-                            <p>안녕하세요. 꿈을 키우는 세상 교보문고입니다.교보문고 서비스를 이용해 주시는 고객님께 감사드립니다.교보문고 영상정보처리기기 운영관리방침이 다음과 같이 일부 개정 될 예정으로 변경내용을 사전 공지하오니 서비스 이용에 참조하시기 바랍니다.1. 개정 사유ㅤ- 보관기간 변경</p>
+                            <p>{{ state.item.content }}</p>
                         </div>
                         <div id="btn_wrap">
                             <a href="/notice"><button id="event_btn">목록으로</button></a>
@@ -40,6 +39,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import { useRoute, useRouter } from 'vue-router';
+import { reactive } from 'vue';
+import axios from 'axios';
 
 export default {
 
@@ -49,9 +51,28 @@ export default {
     },
 
     setup () {
-        
+        const route = useRoute();
 
-        return {}
+        const state = reactive({
+            item:[],
+            no:Number(route.query.no)
+        })
+        
+        const handleData=()=>{
+            axios.get(`/api/get/notice/detail/${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+
+        }
+
+        handleData();
+
+        return {
+            state
+        }
     }
 }
 </script>

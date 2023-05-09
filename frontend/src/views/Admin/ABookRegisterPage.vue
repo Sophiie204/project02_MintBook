@@ -11,61 +11,61 @@
                         <tr>
                             <th scope="row">도서명</th>
                             <td colspan="3">
-                                <input type="text">
+                                <input type="text" v-model="state.item.bookName">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">저자명</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.author">
                             </td>
                             <th scope="row">출판사</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.publisher">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">출판일</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.pubDate" placeholder="YYYY-MM-DD">
                             </td>
                             <th scope="row">정가</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.price">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">ISBN</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.isbn">
                             </td>
                             <th scope="row">카테고리</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.genre">
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row">재고수</th>
+                            <th scope="row">이미지 URL</th>
                             <td colspan="3">
-                                <input type="text">
+                                <input type="text" v-model="state.item.img">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">작가소개</th>
                             <td colspan="3">
-                                <textarea></textarea>
+                                <textarea v-model="state.item.authorInfo"></textarea>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">책소개</th>
                             <td colspan="3">
-                                <textarea></textarea>
+                                <textarea v-model="state.item.bookInfo"></textarea>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="register_wrap">
-                    <button>등록</button>
+                    <button @click="addBook()">등록</button>
                 </div>
             </div>
         </div>
@@ -75,6 +75,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -82,11 +84,37 @@ export default {
     },
 
     setup () {
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            item:{
+                bookName:"",
+                author:"",
+                img:"",
+                publisher:"",
+                pubDate:"",
+                price:null,
+                isbn:"",
+                genre:null,
+                authorInfo:"",
+                bookInfo:""
+            }
         })
 
-        return {state}
+        const addBook=()=>{
+            axios.post('/api/add/book',state.item).then((res)=>{
+                console.log(res);
+                window.alert('도서가 등록됐습니다.');
+                router.go();
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        return {
+            state,
+            addBook
+        }
     }
 }
 </script>
@@ -165,9 +193,14 @@ import
 
     textarea{
         width: 90%;
+        height: 200px;
         border-radius: 5px;
         border: 0.5px solid rgb(184, 184, 184);
         padding-left: 10px;
+        resize: none;
+        outline: none;
+        padding: 10px;
+        box-sizing:border-box;
     }
     
     #register_wrap{

@@ -20,9 +20,9 @@
             <a href="/"><img src="../assets/Navigation/profile.png" id="profile" alt="profile"></a>
           </li>
           <li>
-            <a href="/"><img src="../assets/Navigation/cart.png" id="cart" alt="cart"></a>
+            <a href="/cart"><img src="../assets/Navigation/cart.png" id="cart" alt="cart"></a>
           </li>
-          <li><a href="/">고객센터</a></li>
+          <li><a href="/cs">고객센터</a></li>
           <li><a href="/">회원가입</a></li>
           <li><a href="/">로그인</a></li>
         </ul>
@@ -93,7 +93,6 @@ export default {
 
     const handleSearch=()=>{
       state.searchtext=state.searchtext.trim();
-      state.page=1;
       router.push({path:'/search', query:{searchTerm:state.searchtext}});
     }
 

@@ -23,28 +23,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row" class="td_no">1</th>
-                                <td class="td_title">배송비 정책 변경 안내(2/20~)</td>
-                                <td class="td_date">2023.02.12</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="td_no">2</th>
-                                <td class="td_title">배송비 정책 변경 안내(2/20~)</td>
-                                <td class="td_date">2023.02.12</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="td_no">3</th>
-                                <td class="td_title">배송비 정책 변경 안내(2/20~)</td>
-                                <td class="td_date">2023.02.12</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="td_no">4</th>
-                                <td class="td_title">배송비 정책 변경 안내(2/20~)</td>
-                                <td class="td_date">2023.02.12</td>
+                            <tr v-for="(tmp,idx) in state.item.content" :key="idx">
+                                <th scope="row" class="td_no"> {{ tmp.id }} </th>
+                                <td class="td_title" @click="handleContent(tmp.id)">{{ tmp.title }}</td>
+                                <td class="td_date">{{ tmp.regDate }}</td>
                             </tr>
                         </tbody>
                     </table>
+                    <div class="example-pagination-block">
+                        <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData"/>
+                    </div>
                 </div>
             </div>
             <div>
@@ -58,6 +46,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import axios from 'axios'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
 
@@ -67,10 +58,39 @@ export default {
     },
 
     setup () {
+        const router = useRouter();
         
+        const state = reactive({
+            item:[],
+            total:0
+        })
 
-        return {}
-    }
+
+        const handleData=(pageNum)=>{
+            axios.get(`/api/get/notice?page=${pageNum-1}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item = data;
+                state.total=data.totalElements;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/notice/detail', query:{no:tmp}});
+            
+        }
+
+        handleData();
+
+        return {
+            state,
+            handleData,
+            handleContent
+        }
+
+    },
+
 }
 </script>
 
@@ -188,6 +208,13 @@ export default {
     tbody > tr > th, tbody > tr > td{
         padding-top: 20px;
         padding-bottom: 20px;
+    }
+
+    /* 페이지네이션 */
+    .example-pagination-block{
+        width: 320px;
+        margin: 0 auto;
+        margin-top: 50px;
     }
 
 </style>

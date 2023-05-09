@@ -295,13 +295,19 @@ export default {
             }
             //onsole.log("starObj",tmp_star);
 
-             let sum = 0;
-            
-             for(let i=0;i<tmp_star.length;i++){
-                 sum += tmp_star[i];
-             }
+            if(tmp_star.length == 0){
 
-             return sum/tmp_star.length;
+                return 0;
+                
+            }else{
+                let sum = 0;
+            
+                for(let i=0;i<tmp_star.length;i++){
+                    sum += tmp_star[i];
+                }
+
+                return sum/tmp_star.length;
+            }
 
         }
     }
