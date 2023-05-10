@@ -6,19 +6,19 @@
             </div>
             <div id="content_wrap">
                 <p id="maintitle">이벤트 관리</p>
-                <label>
+                <!-- <label>
                     <select>
                         <option value="title">진행여부</option>
                         <option value="author">제목</option>
                         <option value="isbn">작성날짜</option>
                         <option value="publisher">만료날짜</option>
                     </select>
-                </label>
+                </label> -->
                 <label>
-                    <input type="text">
+                    <input type="text" v-model="state.text" @keyup.enter="handleSearch()">
                 </label>
-                <button id="search" @click="BookSearch()">검색</button>
-                <button id="register">이벤트 등록</button>
+                <button id="search" @click="handleSearch()">검색</button>
+                <button id="register" @click="handleRegister()">이벤트 등록</button>
                 <table class="table">
                     <thead>
                         <tr>
@@ -31,18 +31,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="tmp of state.num" :key="tmp">
-                            <th scope="row">{{ tmp }}</th>
-                            <td>봄맞이 도서 이벤트</td>
-                            <td>2023-03-24</td>
-                            <td>2023-03-30</td>
-                            <td>2023-04-30</td>
+                        <tr v-for="(tmp,idx) of state.item.content" :key="idx" @click="handleContent(tmp.id)" style="cursor: pointer;">
+                            <th scope="row">{{ idx+1 }}</th>
+                            <td>{{ tmp.title }}</td>
+                            <td>{{ tmp.regDate }}</td>
+                            <td>{{ tmp.startDate }}</td>
+                            <td>{{ tmp.endDate }}</td>
                             <td>진행중</td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="pagination">
-                    <el-pagination layout="prev, pager, next" :total="50" />
+                    <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData" />
                 </div>
             </div>
         </div>
@@ -53,6 +53,7 @@
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
 import router from '@/router';
+import axios from 'axios';
 
 export default {
     components:{
@@ -61,16 +62,44 @@ export default {
 
     setup () {
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            num:["1","2","3","4","5","6","7","8","9","10"],
+            item:[],
+            total:0,
+            text:"",
+
         })
 
-        const BookSearch=()=>{
-            router.push("/admin/event/search");
+        const handleData=(pageNum)=>{
+            axios.get(`/api/admin/event/search?page=${pageNum-1}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item = data;
+                state.total = data.totalElements; 
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
         }
+
+        const handleSearch=()=>{
+            state.text=state.text.trim();
+            router.push({path:'/admin/event/search', query:{searchTerm:state.text}});
+        }
+
+        const handleRegister=()=>{
+            router.push({path:'/admin/event/register'});
+        }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/admin/event/detail', query:{no:tmp}})
+        }
+
+        handleData();
+
 
         return {
             state,
-            BookSearch
+            handleSearch,
+            handleRegister,
+            handleContent
         }
     }
 }

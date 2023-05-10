@@ -66,6 +66,7 @@
                 </table>
                 <div id="register_wrap">
                     <button @click="addBook()">등록</button>
+                    <button @click="handleCancel()">취소</button>
                 </div>
             </div>
         </div>

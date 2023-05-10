@@ -11,30 +11,36 @@
                         <tr>
                             <th scope="row">시작날짜</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.startDate">
                             </td>
                             <th scope="row">만료날짜</th>
                             <td>
-                                <input type="text">
+                                <input type="text" v-model="state.item.endDate">
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">제목</th>
                             <td colspan="3">
-                                <input type="text">
+                                <input type="text" v-model="state.item.title">
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row">첨부파일</th>
+                            <th scope="row">썸네일 이미지</th>
                             <td colspan="3">
-                                <input type="file">
+                                <input type="text" v-model="state.item.listimgPath">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">본문 이미지</th>
+                            <td colspan="3">
+                                <input type="text" v-model="state.item.imgPath">
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="register_wrap">
-                    <button>등록</button>
-                    <button>취소</button>
+                    <button @click="addEvent()">등록</button>
+                    <button @click="handleCancel()">취소</button>
                 </div>
             </div>
         </div>
@@ -44,6 +50,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -51,11 +59,38 @@ export default {
     },
 
     setup () {
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            num:["1","2","3","4","5","6","7","8","9","10"],
+            item:{
+                startDate:null,
+                endDate:null,
+                title:"",
+                listimgPath:"",
+                imgPath:""
+            }
         })
 
-        return {state}
+        const addEvent=()=>{
+            axios.post('/api/add/event',state.item).then((res)=>{
+                console.log(res);
+                window.alert('이벤트가 등록됐습니다.');
+                router.go();
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleCancel=()=>{
+            router.push('/admin/event');
+        }
+
+        return {
+            state,
+            addEvent,
+            handleCancel
+        }
     }
 }
 </script>

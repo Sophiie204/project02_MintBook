@@ -10,33 +10,45 @@
                     <tbody>
                         <tr>
                             <th scope="row">이벤트 번호</th>
-                            <td>1</td>
+                            <td>{{ state.item.id }}</td>
                             <th scope="row">진행여부</th>
                             <td>진행중</td>
                         </tr>
                         <tr>
                             <th scope="row">시작날짜</th>
-                            <td>2023-02-23</td>
+                            <td>
+                                <input type="text" v-model="state.item.startDate">
+                            </td>
                             <th scope="row">만료날짜</th>
-                            <td>2023-03-23</td>
+                            <td>
+                                <input type="text" v-model="state.item.endDate">
+                            </td>
                         </tr>
                         <tr>
                             <th scope="row">제목</th>
                             <td colspan="3">
-                                <input type="text">
+                                <input type="text" v-model="state.item.title">
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row">첨부파일</th>
+                            <th scope="row">썸네일 이미지</th>
                             <td colspan="3">
-                                <input type="file">
+                                <!-- <input type="file"> -->
+                                <input type="text" v-model="state.item.listimgPath">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">본문 이미지</th>
+                            <td colspan="3">
+                                <!-- <input type="file"> -->
+                                <input type="text" v-model="state.item.imgPath">
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="register_wrap">
-                    <button>확인</button>
-                    <button>취소</button>
+                    <button @click="handleUpdate(state.item.id)">확인</button>
+                    <button @click="handleCancel(state.item.id)">취소</button>
                 </div>
             </div>
         </div>
@@ -47,6 +59,7 @@
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
 import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     components:{
@@ -58,14 +71,48 @@ export default {
         const router = useRouter();
         
         const state = reactive({
-
+            item:{
+                id:null,
+                startDate:null,
+                endDate:null,
+                title:"",
+                listimgPath:"",
+                imgPath:""
+            },
+            no:Number(route.query.no)
         })
 
-        return {state}
+        const handleData = () => {
+            axios.get(`/api/get/event/detail?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                router.push({path:'/admin/event'})
+            });
+        }
+
+        const handleUpdate=(tmp)=>{
+            axios.put(`/api/event/edit?id=${state.no}`,state.item).then((res)=>{
+                console.log(res);
+                window.alert('이벤트 정보가 수정됐습니다.');
+                router.push({path:'/admin/event/detail', query:{no:tmp}})
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleCancel=(tmp)=>{
+            router.push({path:'/admin/event/detail', query:{no:tmp}})
+        }
+
+        handleData();
+
+        return {state, handleUpdate, handleCancel}
     }
 }
 </script>
-import 
+
 <style lang="css" scoped>
     /*초기화 */
     *{

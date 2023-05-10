@@ -6,6 +6,7 @@
             </div>
             <div id="content_wrap">
                 <p id="maintitle">도서 상세</p>
+                <button id="edit" @click="handleDelete(state.item.id)">삭제</button>
                 <button id="edit" @click="handleEdit(state.item.id)">수정</button>
                 <table class="table">
                     <tbody>
@@ -86,11 +87,24 @@ export default {
             router.push({path:'/admin/book/edit', query:{no:tmp}})
         }
 
+        const handleDelete=(tmp)=>{
+            if(confirm('해당 도서를 삭제하시겠습니까?'))
+            axios.delete(`/api/book/delete?id=${tmp}`).then((res)=>{
+                console.log(res);
+                alert('해당 도서가 삭제됐습니다.');
+                router.push({path:'/admin/book'})
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                router.push({path:'/admin/book'})
+            });
+        }
+
         handleData();
 
         return {
             state,
-            handleEdit
+            handleEdit,
+            handleDelete
         }
     }
 }
@@ -151,7 +165,7 @@ import
     }
 
     #edit{
-        margin-left: 50px;
+        margin-left: 10px;
         float: right;
     }
 

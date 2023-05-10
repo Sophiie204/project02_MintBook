@@ -11,15 +11,6 @@
                 <div id="eventimg">
                     <a href=""><img src="../assets/EventPage/event1.jpg" alt=""></a>
                 </div>
-                <div id="eventimg">
-                    <a href=""><img src="../assets/EventPage/event2.jpg" alt=""></a>
-                </div>
-                <div id="eventimg">
-                    <a href=""><img src="../assets/EventPage/event3.jpg" alt=""></a>
-                </div>
-                <div id="eventimg">
-                    <a href=""><img src="../assets/EventPage/event4.jpg" alt=""></a>
-                </div>
             </div>
             <div>
                 <el-backtop :right="70" :bottom="70" style="color: #3DDCA3;"/>

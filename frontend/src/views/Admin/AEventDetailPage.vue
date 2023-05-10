@@ -10,29 +10,33 @@
                     <tbody>
                         <tr>
                             <th scope="row">이벤트 번호</th>
-                            <td>1</td>
+                            <td>{{ state.item.id }}</td>
                             <th scope="row">진행여부</th>
                             <td>진행중</td>
                         </tr>
                         <tr>
-                            <th scope="row">시작날짜</th>
-                            <td>2023-02-23</td>
-                            <th scope="row">만료날짜</th>
-                            <td>2023-03-23</td>
-                        </tr>
-                        <tr>
                             <th scope="row">제목</th>
-                            <td colspan="3">봄맞이 도서 이벤트</td>
+                            <td colspan="3">{{ state.item.title }}</td>
                         </tr>
                         <tr>
-                            <th scope="row">첨부파일</th>
-                            <td colspan="3">2023springevent.jpg</td>
+                            <th scope="row">시작날짜</th>
+                            <td>{{ state.item.startDate }}</td>
+                            <th scope="row">만료날짜</th>
+                            <td>{{ state.item.endDate }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">썸네일 이미지</th>
+                            <td colspan="3">{{ state.item.listimgPath }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">본문 이미지</th>
+                            <td colspan="3">{{ state.item.imgPath }}</td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="register_wrap">
-                    <button>수정</button>
-                    <button>삭제</button>
+                    <button @click="handleUpdate(state.no)">수정</button>
+                    <button @click="handleDelete(state.no)">삭제</button>
                 </div>
             </div>
         </div>
@@ -42,6 +46,8 @@
 <script>
 import { reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
     components:{
@@ -49,11 +55,43 @@ export default {
     },
 
     setup () {
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            item:[],
+            no:Number(route.query.no)
         })
 
-        return {state}
+        const handleData = () => {
+            axios.get(`/api/get/event/detail?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                router.push({path:'/admin/event'})
+            });
+        }
+
+        const handleUpdate=(tmp)=>{
+            router.push({path:'/admin/event/edit', query:{no:tmp}})
+        }
+
+        const handleDelete=(tmp)=>{
+            if(confirm('해당 이벤트를 삭제하시겠습니까?'))
+            axios.delete(`/api/event/delete?id=${tmp}`).then((res)=>{
+                console.log(res);
+                alert('이벤트가 삭제됐습니다.');
+                router.push({path:'/admin/event'})
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                router.push({path:'/admin/event'})
+            });
+        }
+
+        handleData();
+
+        return {state, handleUpdate, handleDelete}
     }
 }
 </script>
@@ -125,9 +163,8 @@ import
         margin-top:30px;
     }
 
-    th{
-        width: 200px;
-        background: rgb(184, 184, 184);
+    table > tbody > tr> th{
+        width: 150px;
     }
 
     #register_wrap{
