@@ -24,7 +24,7 @@
                             </th>
                             <th colspan="3" class="list_top_right">
                                 <button class="button1">찜</button>
-                                <button class="button1">장바구니</button>
+                                <button class="button1" @click="handleCheckedCart()">장바구니</button>
                                 <button class="button2">바로구매</button>
                             </th>
                         </tr>
@@ -113,6 +113,7 @@ export default {
             total:0,
             page:1,
             pageNumber:0,
+            memberid:4,
             
         })
 
@@ -151,13 +152,24 @@ export default {
             router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
         }
 
+        const handleCheckedCart=()=>{
+            axios.post(`/api/add/cartitem2/${state.memberid}/${state.checked}`).then((res)=>{
+                console.log("handleCartCheck",res);
+                if(confirm('해당 도서가 장바구니에 담겼습니다. 장바구니로 가시겠습니까?'))
+                router.push('/cart');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
         load();
 
         return {
             state,
             categoryBest,
             handlePage,
-            handleContent
+            handleContent,
+            handleCheckedCart
         }
     },
     computed:{

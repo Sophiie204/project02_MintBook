@@ -7,49 +7,47 @@
                 <li><img src="../assets/Navigation/cart.png" alt=""></li>
                 <li id="maintitle">장바구니</li>
             </ul>
-            {{ state.item[0].bookid.bookName}}
+            {{ state.checked }}
             <table>
                 <tr>
                     <th>
                         <input type="checkbox" id="checktop" class="checkbox" v-model="checkAll">
                         <label for="checktop"></label>
                     </th>
-                    <th colspan="3" class="list_top_right">
+                    <th colspan="4" class="list_top_right">
                         <button class="button1">찜</button>
                         <button class="button2">바로구매</button>
-                        <button class="button3">삭제</button>
+                        <button class="button3" @click="handleDelete()">삭제</button>
                     </th>
                 </tr>
-                <tr id="table_bottom_tr" v-for="(item, idx) in state.list" :key="idx">
+                <tr id="table_bottom_tr" v-for="(tmp, idx) in state.item" :key="idx">
                     <td style="width:20px;">
-                        <input type="checkbox" :id=item v-model="state.checked" :value="item" class="checkbox">
-                        <label :for="item"></label>
+                        <input type="checkbox" :id=tmp.id v-model="state.checked" :value="tmp.id" class="checkbox">
+                        <label :for="tmp.id"></label>
                     </td>
                     <td style="width:150px; text-align: center;">
-                        <img src="../assets/MainPage/book1.jpg" alt="boo1" id="img">
+                        <img :src="tmp.bookid.img" alt="boo1" id="img">
                     </td>
                     <td id="price_wrap">
-                        <p id="title">세이노의 가르침</p>
-                        <p id="author">세이노·데이원·2023.03.02</p>
+                        <p id="title">{{ tmp.bookid.bookName }}</p>
+                        <p id="author">{{tmp.bookid.author}}·{{tmp.bookid.publisher}}·{{tmp.bookid.pubDate}}</p>
                         <label id="dc">10%</label>
-                        <label id="dc_price">6,480원</label>
-                        <label id="price">7,200원</label>
-                        <label id="point">|360p</label>
-                        <div id="description">2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 세이노의 가르침이 드디어 전국 서점에서 독자들을 마주한다. 여러판본을 모으고2000년부터 발표된 그의 주옥같은 글들, 독자들이 자발적으로 만든 제본서는 물론, 전자책과 앱까지 나왔던 전국 서점에서 독자들을 마주한다. 여러판본을 모으고</div>
+                        <label id="dc_price">{{tmp.bookid.price}}원</label>
+                        <label id="price">{{tmp.bookid.price}}원</label>
+                        <label id="point">|{{tmp.bookid.author}}p</label>
+                        <div id="description">{{tmp.bookid.bookInfo}}</div>
                     </td>
-                    <td id="quantity">
-                        1
-                    </td>
+                    <td id="quantity">{{ tmp.count }}</td>
                     <td style="width:150px; text-align: right;">
                         <button class="button1" id="fontred">♥</button><br>
                         <button class="button4">바로구매</button><br>
-                        <button class="button3">삭제</button>
+                        <button class="button3" @click="handleDeleteOne(tmp.id)">삭제</button>
                     </td>
                 </tr>
 
             </table>
             <div class="example-pagination-block">
-                <el-pagination layout="prev, pager, next" :total="100"/>
+                <el-pagination layout="prev, pager, next" :total="state.total"/>
             </div>
             <div>
                 <el-backtop :right="70" :bottom="70" style="color: #3DDCA3;"/>
@@ -74,32 +72,66 @@ export default {
 
     setup () {
         const state = reactive({
-            list:["1","2","3","4","5","6","7","8","9","10","11"],
             checked:[],
-            item:[]
+            item:[],
+            memberid:3,
+            total:0,
             
         })
 
         const load=()=>{
-            axios.get(`/api/get/cartitem/${2}`).then(({data})=>{
-                console.log(data);
+            axios.get(`/api/get/cartitem/${state.memberid}`).then(({data})=>{
+                console.log("load",data);
                 state.item = data;
+                state.total = data.length;
             })
+        }
+
+        const handleDelete=()=>{
+            if(confirm('해당 도서를 장바구니에서 삭제하시겠습니까?'))
+            axios.delete(`/api/delete/cartitem/${state.checked}`).then((res)=>{
+                console.log("handleDelete",res);
+                alert('해당 도서가 장바구니에서 삭제됐습니다.');
+                window.location.reload(true);
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                window.location.reload(true);
+            });
+        }
+
+        const handleDeleteOne=(tmp)=>{
+            if(confirm('해당 도서를 장바구니에서 삭제하시겠습니까?'))
+            axios.delete(`/api/delete/cartitem/${tmp}`).then((res)=>{
+                console.log("handleDelete",res);
+                alert('해당 도서가 장바구니에서 삭제됐습니다.');
+                window.location.reload(true);
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                window.location.reload(true);
+            });
         }
 
         load();
 
         return {
             state,
+            handleDelete,
+            handleDeleteOne
         }
     },
     computed:{
         checkAll:{
             get:function(){
-                return this.state.list.length === this.state.checked.length;
+                return this.state.item.length === this.state.checked.length;
             },
             set:function(e){
-                this.state.checked = e ? this.state.list : [];
+                let tmp_id = [];
+                for(let tmp of this.state.item){
+                    tmp_id.push(tmp.id);
+                }
+                console.log("tmp_id",tmp_id);
+                
+                this.state.checked = e ? tmp_id : [];
             }
         }
     }

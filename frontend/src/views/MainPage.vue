@@ -27,19 +27,19 @@
                 <div id="slider_wrap">
                     <el-carousel height="407px">
                         <el-carousel-item>
-                            <img src="../assets/MainPage/slide1.png" alt="slide1">
+                            <router-link to="/event/detail?no=7"><img src="../assets/MainPage/slide1.png" alt="slide1"/></router-link>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <img src="../assets/MainPage/slide2.png" alt="slide2">
+                            <router-link to="/event/detail?no=8"><img src="../assets/MainPage/slide2.png" alt="slide2"/></router-link>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <img src="../assets/MainPage/slide3.png" alt="slide3">
+                            <router-link to="/event/detail?no=9"><img src="../assets/MainPage/slide3.png" alt="slide3"/></router-link>
                         </el-carousel-item>
                     </el-carousel>
                 </div>
                 <div id="notice_wrap">
                     <div>공지사항</div>
-                    <div>MintBook 서버 검점 안내(4/17)</div>
+                    <div @click="handleNoticeContent(state.notice.content[0].id)" id="noticetop">{{ state.notice.content[0].title }}</div>
                 </div>
             </header>
             <section>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="ad_wrap">
-                    <img src="../assets/MainPage/ad1.jpg" alt="ad1">
+                    <router-link to="/event/detail?no=1"><img src="../assets/MainPage/ad1.jpg" alt="ad1" class="ad"/></router-link>
                 </div>
                 <div class="content_wrap">
                     <div class="content_top">
@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="ad_wrap">
-                    <img src="../assets/MainPage/ad2.jpg" alt="ad2">
+                    <router-link to="/event/detail?no=5"><img src="../assets/MainPage/ad2.jpg" alt="ad2" class="ad"/></router-link>
                 </div>
                 <div class="content_wrap">
                     <div class="content_top">
@@ -140,7 +140,8 @@ export default {
         const state = reactive({
             bestseller:[],
             new:[],
-            editor:[]
+            editor:[],
+            notice:[]
         })
 
         const bestseller=()=>{
@@ -173,14 +174,29 @@ export default {
         const handleContent=(tmp1, tmp2)=>{
             router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
         }
+
+        const handleNotice=()=>{
+            axios.get('/api/get/main/notice').then(({data})=>{
+                console.log("handleNotice",data);
+                state.notice = data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleNoticeContent=(tmp)=>{
+            router.push({path:'/notice/detail', query:{no:tmp}});
+        }
         
         bestseller();
         mainNew();
         mainEditor();
+        handleNotice();
 
         return {
             state,
-            handleContent
+            handleContent,
+            handleNoticeContent
         }
     }
 }
@@ -263,6 +279,14 @@ export default {
     text-align: center;
 }
 
+#noticetop{
+    cursor: pointer;
+}
+
+#noticetop:hover{
+    text-decoration: underline;
+}
+
 /* 베스트셀러 영역 */
 .content_wrap{
     /* height: 970px; */
@@ -336,10 +360,16 @@ export default {
 
 /* 광고 영역 */
 .ad_wrap{
+    width:1200;
+    height:200px;
+    overflow: hidden;
     margin-top: 80px;
     margin-bottom: 80px;
+    border-radius: 25px;
 }
-.ad_wrap > img{
+.ad{
+    width:1200;
+    vertical-align: bottom;
     border-radius: 25px;
 }
 

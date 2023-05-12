@@ -8,8 +8,8 @@
                 <li id="maintitle">이벤트</li>
             </ul>
             <div id="categorylist">
-                <div id="eventimg">
-                    <a href=""><img src="../assets/EventPage/event1.jpg" alt=""></a>
+                <div id="eventimg" v-for="(tmp, idx) in state.item" :key="idx">
+                    <img :src="tmp.listimgPath" alt="" id="img" @click="handleContent(tmp.id)">
                 </div>
             </div>
             <div>
@@ -23,6 +23,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import axios from 'axios'
+import { reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
     
@@ -33,7 +36,30 @@ export default {
 
     setup () {
 
-        return {}
+        const router = useRouter();
+        
+        const state = reactive({
+            item:[],
+
+        })
+
+        const handleData=()=>{
+            axios.get('/api/get/event').then(({data})=>{
+                console.log(data);  
+                state.item = data;      
+            })
+        }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/event/detail', query:{no:tmp}})
+        }
+
+        handleData();
+
+        return {
+            state,
+            handleContent
+        }
     }
 }
 </script>
@@ -101,10 +127,16 @@ export default {
         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
         margin:0 auto;
         margin-bottom: 30px;
+        cursor: pointer;
     }
 
     #eventimg:hover{
         box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+    }
+
+    #img{
+        width:380px;
+        height:206px;
     }
     
 

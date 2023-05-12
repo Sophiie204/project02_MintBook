@@ -5,15 +5,15 @@
             <div class="headerpage"></div>
             <div id="title_divide">
                 <div id="title_left">
-                    <p id="title">&lt;경우 없는 세계 출간 이벤트&gt;</p>
-                    <p id="period">2023.02.34~2023.05.05</p>
+                    <p id="title">&lt;{{state.item.title}}&gt;</p>
+                    <p id="period">{{state.item.startDate}}~{{state.item.endDate}}</p>
                 </div>
                 <div id="title_right">
                     <img src="../assets/BookDetailPage/share.png" alt="">
                 </div>
             </div>
             <div id="event_content">
-                <img src="../assets/EventPage/eventcontent1.jpg" alt="">
+                <img :src="state.item.imgPath" alt="">
             </div>
             <div id="btn_wrap">
                 <a href="/event"><button id="event_btn">목록으로</button></a>
@@ -29,6 +29,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import { reactive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
 
@@ -38,9 +41,30 @@ export default {
     },
 
     setup () {
-        
+        const route = useRoute();
+        const router = useRouter();
 
-        return {}
+        const state = reactive({
+            item:[],
+            no:Number(route.query.no)
+        })
+
+        const handleData = () => {
+            axios.get(`/api/get/event/detail?id=${state.no}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item=data;
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+                router.push({path:'/event'});
+            });
+        }
+
+        handleData();
+
+        return {
+            state,
+
+        }
     }
 }
 </script>

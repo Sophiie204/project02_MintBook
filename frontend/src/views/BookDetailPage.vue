@@ -49,7 +49,7 @@
                         <tr class="line"> 
                             <td class="right_left">수량</td>
                             <td class="right_right">
-                                <el-input-number v-model="state.num" :min="1" :max="10" size="large" @change="handleChange(value)" />
+                                <el-input-number v-model="state.cart.count" :min="1" :max="10" size="large" @change="handleChange" />
                             </td>
                         </tr>
                         <tr>
@@ -57,10 +57,13 @@
                                 <button id="alarm">알림신청</button>
                             </td>
                         </tr>
+                        memberid: {{ state.memberid }}
+                        <tr></tr>
+                        {{ state.cart }}
                         <tr>
                             <td colspan='2' id="button_bottom">
                                 <button id="like">♥</button>
-                                <button id="cart">장바구니</button>
+                                <button id="cart" @click="handleCart()">장바구니</button>
                                 <button id="buy">바로구매</button>
                             </td>
                         </tr>
@@ -88,7 +91,6 @@
                 <div class="review_title">
                     <label class="content_title">독자리뷰</label>
                     <label id="review_cnt"> ({{ state.item.reviews.length }})</label>
-                    {{ state.review }}
                 </div>
                 <div class="review_btn">
                     <div id="review_btn_left">
@@ -149,7 +151,7 @@
                 <div class="cs_top">
                     <div class="content_title">반품/교환안내</div>
                     <div class="cs_top_right">
-                        <button id="csbutton">1:1문의</button>
+                        <router-link to="/cs/register"><button id="csbutton">1:1문의</button></router-link>
                     </div>
                 </div>
                 <div class="cs_content">
@@ -200,12 +202,12 @@ export default {
         const router = useRouter();
 
         const state = reactive({
-            num: ref(1),
+            memberid:3,
             item:[],
             no:Number(route.query.no),
             genre:Number(route.query.genre),
             review:{
-                memberid:"1",
+                memberid:"3",
                 writer:"",
                 star:5,
                 content:"",
@@ -218,13 +220,24 @@ export default {
             },
             recommend:[],
             total:0,
-            
-
-            
+            cart:{
+                bookid:Number(route.query.no),
+                count:ref(1),
+            }            
         })
 
         const handleChange = (value) => {
-            console.log(value)
+            console.log(value);
+        }
+
+        const handleCart=()=>{
+            axios.post(`/api/add/cartitem/${state.memberid}`, state.cart).then((res)=>{
+                console.log("handleCart",res);
+                if(confirm('해당 도서가 장바구니에 담겼습니다. 장바구니로 가시겠습니까?'))
+                router.push('/cart');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
         }
 
         const handleData = () => {
@@ -279,7 +292,8 @@ export default {
             handleChange,
             addReview,
             reviewByNew,
-            handleContent
+            handleContent,
+            handleCart,
         }
     },
     computed:{
