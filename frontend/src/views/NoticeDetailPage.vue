@@ -20,7 +20,7 @@
                             <p id="title_right">{{ state.item.regDate }}</p>
                         </div>
                         <div id="notice_content">
-                            <p>{{ state.item.content }}</p>
+                            <p>{{ state?.item?.content }}</p>
                         </div>
                         <div id="btn_wrap">
                             <a href="/notice"><button id="event_btn">목록으로</button></a>

@@ -10,82 +10,57 @@
             <div class="orderproduct_section">
                 <p class="section_title">주문상품</p>
                 <table class="table">
-                    <tr>
+                    <tr v-for="(tmp, idx) in state.item.booksWCount" :key="idx">
                         <td id="orderlist_left">
-                            <p>방주</p>
-                            <p class="orderlist_author">유키 하루오 지음, 김은모 옮김</p>
+                            <p>{{tmp.bookName}}</p>
+                            <p class="orderlist_author">{{tmp.author}} | {{ tmp.publisher }}</p>
                         </td>
-                        <td id="orderlist_center">
-                            1
-                        </td>
-                        <td id="orderlist_right">
-                           14,500원
-                        </td>
+                        <td id="orderlist_center">{{ tmp.count }}</td>
+                        <td id="orderlist_right">{{Number(tmp.total).toLocaleString()}}원</td>
                     </tr>
-                    <tr>
-                        <td id="orderlist_left">
-                            <p>방주</p>
-                            <p class="orderlist_author">유키 하루오 지음, 김은모 옮김</p>
-                        </td>
-                        <td id="orderlist_center">
-                            1
-                        </td>
-                        <td id="orderlist_right">
-                           14,500원
-                        </td>
-                    </tr>
-                    
                 </table>
             </div>
             <div class="address_section">
-                <p class="section_title">베송지 정보</p>
+                <p class="section_title" >베송지 정보</p>
                 <table class="table">
                     <tr>
                         <td class="address_table_left">주문자명</td>
-                        <td class="address_table_right">홍길동</td>
+                        <td class="address_table_right">{{ state.item.name }}</td>
                     </tr>
                     <tr>
                         <td class="address_table_left">수령자명</td>
                         <td class="address_table_right">
-                            <input type="text" placeholder="홍길동">
+                            <input type="text" v-model="state.item.buyer">
                         </td>
                     </tr>
                     <tr>
                         <td class="address_table_left">전화번호</td>
-                        <td class="address_table_right">
-                            <input type="text" placeholder="051-1234-1234">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="address_table_left">휴대전화</td>
-                        <td class="address_table_right">
-                            <input type="text" placeholder="010-1234-1234">
-                        </td>
+                        <td class="address_table_right">{{ state.item.phone }}</td>
                     </tr>
                     <tr>
                         <td class="address_table_left">주소</td>
                         <td class="address_table_right">
-                            <input type="text" placeholder="부산광역시 부산진구 중앙대로 668(A1프라자6층)" id="input_address1">
+                            <input type="text" v-model="state.item.address">
                             <button id="addresssearch_btn">주소검색</button>
                             <br>
-                            <input type="text" placeholder="동성직업전문학교" id="input_address2">
+                            <input type="text" id="input_address2" v-model="state.item.addDetail">
                         </td>
                     </tr>
                 </table>
             </div>
             <div class="dc_section">
-                <p class="section_title">캐시/포인트</p>
+                <p class="section_title">포인트</p>
                 <table class="table" id="cashtable">
                     <tr>
                         <td class="dc_dt1">포인트</td>
-                        <td class="dc_dt2">2,000원</td>
+                        <td class="dc_dt2">0원</td>
                         <td class="dc_dt3">
                             <input type="text">
                         </td>
                         <td class="dc_dt4">
                             <button class="dc_btn">포인트적용</button>
                         </td>
-                        <td class="dc_dt5">사용가능한포인트: 2,000 Point</td>
+                        <td class="dc_dt5">사용가능한포인트: {{ state.item.point }} Point</td>
                     </tr>
                 </table>
             </div>
@@ -94,7 +69,7 @@
                 <table class="table">
                     <tr>
                         <td id="payment_td">
-                            <input type="radio" v-model="state.paymentmethod" value="creditcard" name="method" id="pay1" class="radiobtn">
+                            <input type="radio" v-model="state.paymentmethod" value="card" name="method" id="pay1" class="radiobtn">
                             <label for="pay1">신용카드</label>
                             <input type="radio" v-model="state.paymentmethod" value="deposit" name="method" id="pay2" class="radiobtn">
                             <label for="pay2">무통장입금</label>
@@ -108,7 +83,7 @@
                     <div class="paybox">
                         <div>
                             <label class="label1">상품 주문 총액</label>
-                            <label>32,000원</label>
+                            <label>{{state.item.totalprice}}원</label>
                         </div>
                         <div>
                             <label class="label1">배송비</label>
@@ -118,23 +93,20 @@
                     <div class="calc">-</div>
                     <div class="paybox">
                         <div>
-                            <label class="label1">포인트 적용</label>
-                            <label>32,000원</label>
-                        </div>
-                        <div>
-                            <label class="label1">캐시 적용</label>
+                            <label class="label2">포인트 적용</label>
                             <label>0원</label>
                         </div>
                     </div>
                     <div class="calc">=</div>
                     <div id="finalbox">
                         <p class="finaltext">최종 결제 금액</p>
-                        <p class="finalprice">28,000원</p>
-                        <button id="borderbtn">주문하기</button>
+                        <p class="finalprice">{{state.item.totalprice}}원</p>
+                        <button id="borderbtn" @click="handleOrder()">주문하기</button>
                     </div>
                 </div>
                 <p id="agreetext">구매조건을 확인하였으며 결제에 동의합니다.</p>
             </div>
+            {{ state.order }}
         </div>
         <FooterPage></FooterPage>
     </div>
@@ -143,7 +115,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
+import axios from 'axios'
+import { useRoute, useRouter } from 'vue-router'
 
 export default {
 
@@ -154,12 +128,118 @@ export default {
 
     setup () {
 
+        const router = useRouter();
+        const route = useRoute();
+        const { IMP } = window;
+
         const state = reactive({
             paymentmethod:"",
+            member:3,
+            ids:route.query.ids,
+            item:[],
+            id:Number(route.query.id),
+            cnt:Number(route.query.cnt),
+            bids:route.query.bids,
+            bookids:[]//?
+
+        })
+
+        const handleData=()=>{
+            if(window.history.state.back === '/cart'){
+                axios.get(`/api/get/cart/wishorder/${state.member}/${state.ids}`).then(({data})=>{
+                console.log("handleData(Cart)",data);
+                state.item = data;
+                }).catch(()=>{
+                    alert('에러(cart)가 발생했습니다.');
+                });
+            }else if(router.options.history.state.back.startsWith('/book')){
+                axios.get(`/api/get/detail/wishorder/${state.member}/${state.id}/${state.cnt}`).then(({data})=>{
+                console.log("handleData(detail)",data);
+                state.item = data;
+                }).catch(()=>{
+                    alert('에러(detail)가 발생했습니다.');
+                });
+            }else{
+                axios.get(`/api/get/list/wishorder/${state.member}/${state.bids}`).then(({data})=>{
+                    console.log("handleData(List)",data);
+                    state.item=data;
+                }).catch(()=>{
+                    alert('에러(list)가 발생했습니다.');
+                });
+            }
+        }
+
+        const handleOrder= async()=>{
+
+            if(state.paymentmethod == "card"){
+
+                IMP.init("**본인이 발급받은 imp***");//본인 imp로 변경
+
+                IMP.request_pay({ // param
+                pg: "",//PG사
+                pay_method: "card",//지불수단
+                name: state.item.booksWCount[0].bookName, //상품명
+                amount: state.item.totalprice, //가격
+                buyer_email: state.item.email, //구매자 이름
+                buyer_name: state.item.buyer, //구매자 이름
+                buyer_tel: state.item.phone, //구매자 연락처
+                buyer_addr: `${state.item.address} ${state.item.addDetail}`, //구매자 주소지
+                buyer_postcode: "07222" //구매자 우편번호
+                }, rsp => { // callback
+                    console.log(rsp);
+                    if (rsp.success) {
+                        axios.post(`/api/order/total/${state.member}`,
+                        {
+                            booksWCount:state.item.booksWCount,
+                            buyer:state.item.buyer,
+                            buyerAddress:`${state.item.address} ${state.item.addDetail}`,
+                            payMethod:state.paymentmethod,
+                            totalprice:state.item.totalprice           
+                        }).then(()=>{
+                            axios.get(`/api/get/order/one/${state.member}`).then(({data})=>{
+                                console.log(data);
+                                alert('결제가 완료됐습니다.');
+                                router.push({path:'/order-result', query:{no:data.content[0].id}})
+                            }).catch(()=>{
+                                alert('에러가 발생했습니다.');
+                                window.location.reload(true);
+                            });
+                        })
+                    } else {
+                        alert("결제 실패");
+                    }
+                });
+            }else if(state.paymentmethod == "deposit"){
+                axios.post(`/api/order/total/${state.member}`,
+                {
+                    booksWCount:state.item.booksWCount,
+                    buyer:state.item.buyer,
+                    buyerAddress:`${state.item.address} ${state.item.addDetail}`,
+                    payMethod:state.paymentmethod,
+                    totalprice:state.item.totalprice           
+                }).then(()=>{
+                    axios.get(`/api/get/order/one/${state.member}`).then(({data})=>{
+                        console.log(data);
+                        alert('무통장 입금을 하셔야 결제가 완료됩니다.');
+                        router.push({path:'/order-result', query:{no:data.content[0].id}})
+                    }).catch(()=>{
+                        alert('에러가 발생했습니다.');
+                        window.location.reload(true);
+                    });
+                })
+            }
+
+
+        }
+
+        onMounted(()=>{
+            handleData();
         })
 
         return {
-            state
+            state,
+            handleOrder
+            
         }
     }
 }
@@ -276,7 +356,8 @@ export default {
     }
 
     input[type=text]{
-        height: 39px;
+        height: 30px;
+        width: 500px;
         outline-style: none;  /* 포커스시 발생하는 효과 제거를 원한다면 */
         -webkit-appearance: none;  /* 브라우저별 기본 스타일링 제거 */
         -moz-appearance: none;
@@ -285,6 +366,8 @@ export default {
         border-radius: 6px;
         padding-left: 10px;
         box-sizing: content-box;
+        padding-top: 0;
+        padding-bottom: 0;
     }
 
     #input_address1{
@@ -424,6 +507,14 @@ export default {
 
     .label1{
         margin-top: 30px;
+        width: 110px;
+        margin-right: 20px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    .label2{
+        margin-top: 55px;
         width: 110px;
         margin-right: 20px;
         font-weight: bold;

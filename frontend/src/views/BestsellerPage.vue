@@ -25,7 +25,7 @@
                             <th colspan="3" class="list_top_right">
                                 <button class="button1">찜</button>
                                 <button class="button1" @click="handleCheckedCart()">장바구니</button>
-                                <button class="button2">바로구매</button>
+                                <button class="button2" @click="handleOrder(state.checked)">바로구매</button>
                             </th>
                         </tr>
 
@@ -47,8 +47,8 @@
                                 <div id="description" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookInfo }}</div>
                             </td>
                             <td style="width:150px; text-align: right;">
-                                <button class="button3">장바구니</button><br>
-                                <button class="button4">바로구매</button><br>
+                                <button class="button3" @click="handleOneCart(tmp.id)">장바구니</button><br>
+                                <button class="button4" @click="handleOrder(tmp.id)">바로구매</button><br>
                                 <button class="button5">♥</button>
                             </td>
                         </tr>
@@ -113,11 +113,11 @@ export default {
             total:0,
             page:1,
             pageNumber:0,
-            memberid:4,
+            memberid:3,
             
         })
 
-        const load=()=>{
+        const handleData=()=>{
             axios.get('/api/get/bestseller').then(({data})=>{
                 console.log("load",data);
                 state.item=data;
@@ -162,14 +162,30 @@ export default {
             });
         }
 
-        load();
+        const handleOneCart=(tmp)=>{
+            axios.post(`/api/add/cartitem3/${state.memberid}/${tmp}`).then((res)=>{
+                console.log("handleOneCart",res);
+                if(confirm('해당 도서가 장바구니에 담겼습니다. 장바구니로 가시겠습니까?'))
+                router.push('/cart');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleOrder=(tmp)=>{
+            router.push({path:'/order', query:{bids:tmp}})
+        }
+
+        handleData();
 
         return {
             state,
             categoryBest,
             handlePage,
             handleContent,
-            handleCheckedCart
+            handleCheckedCart,
+            handleOrder,
+            handleOneCart
         }
     },
     computed:{

@@ -17,17 +17,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>1</td>
-                            <td>16,500원</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>불행한 당신을 위하여</td>
-                            <td>1</td>
-                            <td>16,500원</td>
+                        <tr v-for="(tmp,idx) in state.item.booksWCount" :key="idx">
+                            <td>{{ idx+1 }}</td>
+                            <td>{{tmp.bookName}}</td>
+                            <td>{{ tmp.count }}</td>
+                            <td>{{Number(tmp.total).toLocaleString()}}원</td>
                         </tr>
                     </tbody>
                 </table>
@@ -36,44 +30,43 @@
                     <tbody>
                         <tr>
                             <th>주문자명</th>
-                            <td>홍길동</td>
+                            <td>{{ state.item.memberName }}</td>
                             <th>수령자명</th>
-                            <td>김철수</td>
+                            <td>{{ state.item.buyer }}</td>
                         </tr>
                         <tr>
                             <th>배송지</th>
-                            <td colspan="3">부산광역시 부산진구 중앙대로</td>
+                            <td colspan="3">{{ state.item.address }}</td>
                         </tr>
                         <tr>
                             <th>전화번호</th>
-                            <td>051-2341-2341</td>
-                            <th>휴대전</th>
-                            <td>010-2341-2341</td>
+                            <td colspan="3">{{ state.item.phone }}</td>
                         </tr>
                         <tr>
                             <th>주문번호</th>
-                            <td>012-22341-A2df3141</td>
+                            <td>{{ state.item.orderNum }}</td>
                             <th>배송방법</th>
                             <td>택배</td>
                         </tr>
                         <tr>
                             <th>주문접수일</th>
-                            <td>2023년03월31일 11시 44분</td>
+                            <td>{{ state.item.orderDate }}</td>
                             <th>수령예상일</th>
-                            <td>2023년 04월 01일</td>
+                            <td>{{ state.item.arrivalDate }}</td>
                         </tr>
                         <tr>
-                            <th>상태</th>
+                            <th>상태{{ state.item.status }}</th>
                             <td colspan="3">
-                                <select>
-                                    <option value="status">환불접수</option>
-                                    <option value="status">환불진행중</option>
-                                    <option value="status">환불완료</option>
-                                    <option value="status">반품접수</option>
-                                    <option value="status">반품진행중</option>
-                                    <option value="status">반품완료</option>
+                                <select v-model="state.item.status">
+                                    <option value="주문완료">주문완료</option>
+                                    <option value="환불접수">환불접수</option>
+                                    <option value="환불진행중">환불진행중</option>
+                                    <option value="환불완료">환불완료</option>
+                                    <option value="반품접수">반품접수</option>
+                                    <option value="반품진행중">반품진행중</option>
+                                    <option value="반품완료">반품완료</option>
                                 </select>
-                                <button>상태변경</button>
+                                <button @click="handleUpdate()">상태변경</button>
                             </td>
                         </tr>
                     </tbody>
@@ -81,18 +74,18 @@
                 <p>결제정보</p>
                 <table class="table">
                     <tr>
-                        <th>총 주문 금액</th>
-                        <td>3,4000원(상품가격 34,000원+배송료0원)</td>
+                        <th class="total">총 주문 금액</th>
+                        <td>{{Number(state.item.totalprice).toLocaleString()}}원(상품가격 {{Number(state.item.totalprice).toLocaleString()}}원+배송료0원)</td>
                     </tr>
                     <tr>
-                        <th>실 결제 금액</th>
+                        <th class="total">실 결제 금액</th>
                         <td>
-                            <label id="price">19,600</label><label>원(포인트사용:1,000원+캐시사용:10,000원)</label>
+                            <label id="price">{{Number(state.item.totalprice).toLocaleString()}}</label><label>원(포인트사용:0원)</label>
                         </td>
                     </tr>
-                    <tr>
+                    <tr class="total">
                         <th>결제방법</th>
-                        <td>신용카드(국민카드)</td>
+                        <td>{{ state.item.payMethod }}</td>
                     </tr>
                 </table>
             </div>
@@ -101,7 +94,10 @@
 </template>
 
 <script>
+import { onMounted, reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
+import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -110,7 +106,42 @@ export default {
 
     setup () {
 
-        return {}
+        const route = useRoute();
+        const router = useRouter();
+
+        const state = reactive({
+            item:[],
+            no:Number(route.query.no),
+        })
+
+        const handleData=async()=>{
+
+            await axios.get(`/api/get/order/detail/${state.no}`).then(({data})=>{
+                console.log(data);
+                state.item=data;
+            })
+        }
+
+        const handleUpdate=async()=>{
+            await axios.put(`/api/admin/order/update/${state.no}`,{
+                status:state.item.status
+            }).then(()=>{
+                alert('수정됐습니다.');
+                router.go();
+            }).catch((err) => {
+                alert("수정을 실패하였습니다.");
+                console.log(err);
+             });
+        }
+
+        onMounted(()=>{
+            handleData();
+        })
+
+        return {
+            state,
+            handleUpdate
+        }
     }
 }
 </script>
@@ -134,6 +165,7 @@ import
         color: black;
         font-weight: bold;
     }
+
 
     /*전체 페이지 영역 */
     #divide_wrap{
@@ -182,6 +214,9 @@ import
         margin-bottom: 30px;
         border: 1px solid black;
     }
+    .total{
+        width: 150px;
+    }
     
     p{
         font-weight: bold;
@@ -193,5 +228,9 @@ import
         color: #3DDCA3;
     }
 
+    th,tr{
+        padding: 10px;
+        border-bottom: 1px solid black;
+    }
     
 </style>

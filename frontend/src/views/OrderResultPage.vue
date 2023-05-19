@@ -14,35 +14,33 @@
                 <table class="ordertable">
                     <tr>
                         <td class="textbold">주문자명</td>
-                        <td class="right">홍길동</td>
+                        <td class="right">{{ state.item.memberName }}</td>
                         <td class="textbold">수령자명</td>
-                        <td class="right">김철수</td>
+                        <td class="right">{{ state.item.buyer }}</td>
                     </tr>
                     <tr>
                         <td class="textbold">배송지</td>
-                        <td colspan="3" class="right">부산광역시 부산진구 중앙대로 668(A1프라자6층)</td>
+                        <td colspan="3" class="right">{{ state.item.address }}</td>
                     </tr>
                     <tr>
                         <td class="textbold">전화번호</td>
-                        <td class="right">051-123-1234</td>
-                        <td class="textbold">휴대전화</td>
-                        <td class="right">010-1234-1234</td>
+                        <td class="right" colspan="3">{{ state.item.phone }}</td>
                     </tr>
                     <tr>
                         <td class="textbold">주문번호</td>
-                        <td class="right">001-1234-A49341</td>
+                        <td class="right">{{ state.item.orderNum }}</td>
                         <td class="textbold">배송방법</td>
                         <td class="right">택배</td>
                     </tr>
                     <tr>
                         <td class="textbold">주문접수일</td>
-                        <td class="right">2023년 03월 31일 11시 44분</td>
+                        <td class="right">{{ state.item.orderDate }}</td>
                         <td class="textbold">수령예상일</td>
-                        <td class="right">2023년 04월 01일</td>
+                        <td class="right">{{ state.item.arrivalDate }}</td>
                     </tr>
                     <tr>
                         <td class="textbold">상태</td>
-                        <td colspan="3" class="right">결제완료</td>
+                        <td colspan="3" class="right">{{ state.item.status }}<label v-if="state.item.payMethod === 'deposit'">(국민은행 10431321-1249112으로 입금해주셔야 결제가 완료됩니다.)</label></td>
                     </tr>
                 </table>
             </div>
@@ -51,17 +49,17 @@
                 <table class="ordertable">
                     <tr>
                         <td class="textbold">총 주문 금액</td>
-                        <td class="right">34,000원(상품가격34,000원 + 배송료0원)</td>
+                        <td class="right">{{ state.item.totalprice }}원(상품가격{{ state.item.totalprice }}원 + 배송료0원)</td>
                     </tr>
                     <tr>
                         <td class="textbold">실 결제 금액</td>
                         <td class="right">
-                            <label id="totalprice">19,600</label><label>원(포인트사용: 1,000원, 캐시사용:10,000원)</label>
+                            <label id="totalprice">{{ state.item.totalprice }}</label><label>원(포인트사용: 0원)</label>
                         </td>
                     </tr>
                     <tr>
                         <td class="textbold">결제방법</td>
-                        <td class="right">신용카드(국민카드)</td>
+                        <td class="right">{{ state.item.payMethod }}</td>
                     </tr>
                 </table>
             </div>
@@ -76,6 +74,9 @@
 <script>
 import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
+import { onMounted, reactive } from 'vue'
+import axios from 'axios'
+import { useRoute } from 'vue-router'
 
 export default {
     
@@ -85,8 +86,31 @@ export default {
     },
 
     setup () {
+        
+        const route = useRoute();
 
-        return {}
+        const state = reactive({
+            item:[],
+            no:Number(route.query.no),
+            member:3
+        })
+
+        const handleData=async()=>{
+            await axios.get(`/api/get/order/detail/${state.member}/${state.no}`).then(({data})=>{
+                console.log(data);
+                state.item = data;
+            }).catch(()=>{
+                    alert('에러가 발생했습니다.');
+            });
+        }
+
+        onMounted(()=>{
+            handleData();
+        })
+
+        return {
+            state
+        }
     }
 }
 </script>

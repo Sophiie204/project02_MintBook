@@ -37,6 +37,7 @@ import AEventRegisterPage from '../views/Admin/AEventRegisterPage'
 
 //테스트
 import CategoryTest from '../views/Test/CategoryTest'
+import PortoneTest from '../views/Test/PortoneTest'
 
 
 const routes = [
@@ -156,7 +157,7 @@ const routes = [
     component: ABookEditPage
   },
   {
-    path: '/Aorder',
+    path: '/admin/order',
     name: 'adminorder',
     component: AOrderPage
   },
@@ -203,6 +204,11 @@ const routes = [
     path: '/categorytest',
     name: 'categoryTest',
     component: CategoryTest
+  },
+  {
+    path: '/portone',
+    name: 'Portone',
+    component: PortoneTest
   },
 
 

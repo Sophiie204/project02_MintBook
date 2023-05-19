@@ -27,13 +27,13 @@
                 <div id="slider_wrap">
                     <el-carousel height="407px">
                         <el-carousel-item>
-                            <router-link to="/event/detail?no=7"><img src="../assets/MainPage/slide1.png" alt="slide1"/></router-link>
+                            <router-link to="/event/detail?no=1"><img src="../assets/MainPage/slide1.png" alt="slide1"/></router-link>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <router-link to="/event/detail?no=8"><img src="../assets/MainPage/slide2.png" alt="slide2"/></router-link>
+                            <router-link to="/event/detail?no=2"><img src="../assets/MainPage/slide2.png" alt="slide2"/></router-link>
                         </el-carousel-item>
                         <el-carousel-item>
-                            <router-link to="/event/detail?no=9"><img src="../assets/MainPage/slide3.png" alt="slide3"/></router-link>
+                            <router-link to="/event/detail?no=3"><img src="../assets/MainPage/slide3.png" alt="slide3"/></router-link>
                         </el-carousel-item>
                     </el-carousel>
                 </div>
