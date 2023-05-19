@@ -16,38 +16,38 @@
                     </th>
                     <th colspan="4" class="list_top_right">
                         <button class="button1">찜</button>
-                        <button class="button2">바로구매</button>
+                        <button class="button2" @click="handleOrder(state.checked)">바로구매</button>
                         <button class="button3" @click="handleDelete()">삭제</button>
                     </th>
                 </tr>
-                <tr id="table_bottom_tr" v-for="(tmp, idx) in state.item" :key="idx">
+                <tr id="table_bottom_tr" v-for="(tmp, idx) in state.item.content" :key="idx">
                     <td style="width:20px;">
                         <input type="checkbox" :id=tmp.id v-model="state.checked" :value="tmp.id" class="checkbox">
                         <label :for="tmp.id"></label>
                     </td>
                     <td style="width:150px; text-align: center;">
-                        <img :src="tmp.bookid.img" alt="boo1" id="img">
+                        <img :src="tmp.bookid.img" alt="boo1" id="img" @click="handleContent(tmp.bookid.id, tmp.bookid.genre)">
                     </td>
                     <td id="price_wrap">
-                        <p id="title">{{ tmp.bookid.bookName }}</p>
+                        <p id="title" @click="handleContent(tmp.bookid.id, tmp.bookid.genre)">{{ tmp.bookid.bookName }}</p>
                         <p id="author">{{tmp.bookid.author}}·{{tmp.bookid.publisher}}·{{tmp.bookid.pubDate}}</p>
                         <label id="dc">10%</label>
                         <label id="dc_price">{{tmp.bookid.price}}원</label>
                         <label id="price">{{tmp.bookid.price}}원</label>
-                        <label id="point">|{{tmp.bookid.author}}p</label>
-                        <div id="description">{{tmp.bookid.bookInfo}}</div>
+                        <label id="point">|{{Number(Math.round(tmp.bookid.price*0.05)*1).toLocaleString()}}p</label>
+                        <div id="description" @click="handleContent(tmp.bookid.id, tmp.bookid.genre)">{{tmp.bookid.bookInfo}}</div>
                     </td>
                     <td id="quantity">{{ tmp.count }}</td>
                     <td style="width:150px; text-align: right;">
                         <button class="button1" id="fontred">♥</button><br>
-                        <button class="button4">바로구매</button><br>
+                        <button class="button4" @click="handleOrder(tmp.id)">바로구매</button><br>
                         <button class="button3" @click="handleDeleteOne(tmp.id)">삭제</button>
                     </td>
                 </tr>
 
             </table>
             <div class="example-pagination-block">
-                <el-pagination layout="prev, pager, next" :total="state.total"/>
+                <el-pagination layout="prev, pager, next" :total="state.total" @current-change="load"/>
             </div>
             <div>
                 <el-backtop :right="70" :bottom="70" style="color: #3DDCA3;"/>
@@ -62,6 +62,7 @@ import HeaderPage from '@/components/HeaderPage.vue'
 import FooterPage from '@/components/FooterPage.vue'
 import { reactive } from 'vue'
 import axios from 'axios'
+import router from '@/router'
 
 export default {
     
@@ -79,12 +80,16 @@ export default {
             
         })
 
-        const load=()=>{
-            axios.get(`/api/get/cartitem/${state.memberid}`).then(({data})=>{
+        const load=(pageNum)=>{
+            axios.get(`/api/get/cartitem/${state.memberid}?page=${pageNum-1}`).then(({data})=>{
                 console.log("load",data);
                 state.item = data;
-                state.total = data.length;
+                state.total = data.totalElements;
             })
+        }
+
+        const handleContent=(tmp1, tmp2)=>{
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
         }
 
         const handleDelete=()=>{
@@ -111,12 +116,19 @@ export default {
             });
         }
 
+        const handleOrder=(tmp)=>{
+            router.push({path:'/order', query:{ids:tmp}})
+        }
+
         load();
 
         return {
             state,
             handleDelete,
-            handleDeleteOne
+            handleDeleteOne,
+            handleOrder,
+            load,
+            handleContent
         }
     },
     computed:{
@@ -295,6 +307,10 @@ export default {
         margin-bottom: 3px;
     }
 
+    #title, #img, #description:hover{
+        cursor: pointer;
+    }
+
     #author{
         font-size: 13px;
         color: #998F8F;
@@ -330,6 +346,10 @@ export default {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+    }
+
+    #description:hover{
+        text-decoration: underline;
     }
 
     #quantity{

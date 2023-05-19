@@ -23,8 +23,8 @@
                             </th>
                             <th colspan="3" class="list_top_right">
                                 <button class="button1">찜</button>
-                                <button class="button1">장바구니</button>
-                                <button class="button2">바로구매</button>
+                                <button class="button1" @click="handleCheckedCart()">장바구니</button>
+                                <button class="button2" @click="handleOrder(state.checked)">바로구매</button>
                                 <select name="" id="">
                                     <option value="">판매순</option>
                                     <option value="">최신순</option>
@@ -52,14 +52,14 @@
                                 <div id="description" @click="handleContent(tmp.id, tmp.genre)">{{ tmp.bookInfo }}</div>
                             </td>
                             <td style="width:150px; text-align: right;">
-                                <button class="button3">장바구니</button><br>
-                                <button class="button4">바로구매</button><br>
+                                <button class="button3" @click="handleOneCart(tmp.id)">장바구니</button><br>
+                                <button class="button4" @click="handleOrder(tmp.id)">바로구매</button><br>
                                 <button class="button5">♥</button>
                             </td>
                         </tr>
                     </table>
                     <div class="example-pagination-block">
-                        <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData,handleCategory"/>
+                        <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData"/>
                     </div>
                 </div>
            </div>
@@ -117,7 +117,8 @@ export default {
             checked:[],
             genre:Number(route.query.genre),
             total:0,
-            item:[]
+            item:[],
+            memberid:3
             
         })
 
@@ -146,12 +147,41 @@ export default {
             router.push({path:'/book', query:{no:tmp1, genre:tmp2}})
         }
 
+        const handleCheckedCart=()=>{
+            axios.post(`/api/add/cartitem2/${state.memberid}/${state.checked}`).then((res)=>{
+                console.log("handleCartCheck",res);
+                if(confirm('해당 도서가 장바구니에 담겼습니다. 장바구니로 가시겠습니까?'))
+                router.push('/cart');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleOneCart=(tmp)=>{
+            axios.post(`/api/add/cartitem3/${state.memberid}/${tmp}`).then((res)=>{
+                console.log("handleOneCart",res);
+                if(confirm('해당 도서가 장바구니에 담겼습니다. 장바구니로 가시겠습니까?'))
+                router.push('/cart');
+            }).catch(()=>{
+                alert('에러가 발생했습니다.');
+            });
+        }
+
+        const handleOrder=(tmp)=>{
+            router.push({path:'/order', query:{bids:tmp}})
+        }
+
+
         handleData();
 
         return {
             state,
             handleCategory,
-            handleContent
+            handleContent,
+            handleData,
+            handleCheckedCart,
+            handleOneCart,
+            handleOrder
         }
     },
     computed:{
@@ -241,6 +271,10 @@ export default {
     #category_list{
         font-size: 15px;
         margin-bottom: 10px;
+    }
+
+    #category_list:hover{
+        font-weight: bold;
     }
 
 

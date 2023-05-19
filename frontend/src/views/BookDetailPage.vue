@@ -64,7 +64,7 @@
                             <td colspan='2' id="button_bottom">
                                 <button id="like">♥</button>
                                 <button id="cart" @click="handleCart()">장바구니</button>
-                                <button id="buy">바로구매</button>
+                                <button id="buy" @click="handleOrder(state.item.id, state.cart.count)">바로구매</button>
                             </td>
                         </tr>
                     </table>
@@ -278,8 +278,11 @@ export default {
         }
 
         const handleContent=(tmp1, tmp2)=>{
-            router.push({path:'/book', query:{no:tmp1, genre:tmp2}});
-            
+            router.push({path:'/book', query:{no:tmp1, genre:tmp2}}); 
+        }
+
+        const handleOrder=(tmp1, tmp2)=>{
+            router.push({path:'/order', query:{id:tmp1, cnt:tmp2 }})
         }
 
 
@@ -294,6 +297,7 @@ export default {
             reviewByNew,
             handleContent,
             handleCart,
+            handleOrder
         }
     },
     computed:{

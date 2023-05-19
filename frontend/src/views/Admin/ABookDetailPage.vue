@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
@@ -74,8 +74,8 @@ export default {
             no:Number(route.query.no)
         })
 
-        const handleData = () => {
-            axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
+        const handleData = async() => {
+            await axios.get(`/api/get/book?id=${state.no}`).then(({data})=>{
                 console.log("handleData",data);
                 state.item=data;
             }).catch(()=>{
@@ -83,13 +83,13 @@ export default {
             });
         }
 
-        const handleEdit=(tmp)=>{
-            router.push({path:'/admin/book/edit', query:{no:tmp}})
+        const handleEdit=async(tmp)=>{
+            await router.push({path:'/admin/book/edit', query:{no:tmp}})
         }
 
-        const handleDelete=(tmp)=>{
+        const handleDelete=async(tmp)=>{
             if(confirm('해당 도서를 삭제하시겠습니까?'))
-            axios.delete(`/api/book/delete?id=${tmp}`).then((res)=>{
+            await axios.delete(`/api/book/delete?id=${tmp}`).then((res)=>{
                 console.log(res);
                 alert('해당 도서가 삭제됐습니다.');
                 router.push({path:'/admin/book'})
@@ -100,7 +100,9 @@ export default {
         }
 
 
-        handleData();
+        onMounted(()=>{
+            handleData();
+        })
 
         return {
             state,

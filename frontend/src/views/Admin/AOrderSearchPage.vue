@@ -5,14 +5,13 @@
                 <admin-menu-page></admin-menu-page>
             </div>
             <div id="content_wrap">
-                <p id="maintitle">아이디:"user1"</p>
-                <p id="searchtotal">검색결과 8건</p>
+                <p id="maintitle">검색어:"{{state.searchTerm}}"</p>
+                <p id="searchtotal">검색결과 {{state.item.totalElements}}건</p>
                 <table class="table">
                     <thead>
                         <tr>
                             <th scope="col">No.</th>
                             <th scope="col">주문번호</th>
-                            <th scope="col">주문내역</th>
                             <th scope="col">아이디</th>
                             <th scope="col">금액</th>
                             <th scope="col">주문날짜</th>
@@ -20,19 +19,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="tmp of state.num" :key="tmp">
-                            <th scope="row">{{ tmp }}</th>
-                            <td>98746565163521</td>
-                            <td>불행한 당신을 위하여 외 2권</td>
-                            <td>user1</td>
-                            <td>23,500원</td>
-                            <td>2023-03-09</td>
-                            <td>발송준비중</td>
+                        <tr v-for="(tmp, idx) in state.item.content" :key="idx" @click="handleContent(tmp.id)" style="cursor: pointer;">
+                            <th scope="row">{{ idx+1 }}</th>
+                            <td>{{tmp.orderNum}}</td>
+                            <td>{{ tmp.buyerEmail }}</td>
+                            <td>{{Number(tmp.totalPrice).toLocaleString()}}원</td>
+                            <td>{{ tmp.orderDate }}</td>
+                            <td>{{tmp.status}}</td>
                         </tr>
                     </tbody>
                 </table>
                 <div id="pagination">
-                    <el-pagination layout="prev, pager, next" :total="50" />
+                    <el-pagination layout="prev, pager, next" :total="state.total" @current-change="handleData" />
                 </div>
             </div>
         </div>
@@ -40,9 +38,11 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
 import router from '@/router';
+import axios from 'axios';
+import { useRoute, useRouter } from 'vue-router';
 
 export default {
     components:{
@@ -50,17 +50,38 @@ export default {
     },
 
     setup () {
+        const route = useRoute();
+        const router = useRouter();
+        
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"]
+            num:["1","2","3","4","5","6","7","8","9","10"],
+            memberid:3,
+            item:[],
+            searchTerm:String(route.query.searchTerm),
+            total:0
+
         })
 
-        const BookSearch=()=>{
-            router.push("/admin/order/search");
+        const handleData=async(pageNum)=>{
+            await axios.get(`/api/get/order/all?searchTerm=${state.searchTerm}&page=${pageNum-1}`).then(({data})=>{
+                console.log("handleData",data);
+                state.item = data;
+                state.total = data.totalElements;
+            })
         }
+
+        const handleContent=(tmp)=>{
+            router.push({path:'/admin/order/detail', query:{no:tmp}})
+        }
+
+        onMounted(()=>{
+            handleData();
+        })
 
         return {
             state,
-            BookSearch
+            handleData,
+            handleContent
         }
     }
 }

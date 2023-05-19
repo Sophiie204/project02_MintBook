@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import AdminMenuPage from '../../components/AdminMenuPage.vue';
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
@@ -57,14 +57,13 @@ export default {
         const router = useRouter();
         
         const state = reactive({
-            num:["1","2","3","4","5","6","7","8","9","10"],
             total:0,
             item:[],
             text:String(route.query.searchTerm),
         })
 
-        const handleData=(pageNum)=>{
-            axios.get(`/api/admin/get/search?searchTerm=${state.text}&page=${pageNum-1}`).then(({data})=>{
+        const handleData=async(pageNum)=>{
+            await axios.get(`/api/admin/get/search?searchTerm=${state.text}&page=${pageNum-1}`).then(({data})=>{
                 console.log("handleSearchData",data);
                 console.log(data);
                 state.item = data;
@@ -78,7 +77,9 @@ export default {
             router.push({path:'/admin/book/detail', query:{no:tmp}})
         }
 
-        handleData();
+        onMounted(()=>{
+            handleData();
+        })
 
         return {state, handleContent}
     }
