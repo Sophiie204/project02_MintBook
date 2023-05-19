@@ -2,6 +2,8 @@ package com.example.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -33,6 +35,11 @@ public interface CartitemRepository extends JpaRepository<Cartitem, Integer> {
 	CartitemRequestDTO save(CartitemRequestDTO newDto);
 
 	Cartitem findByCartidAndBookid(Cart cart, int bookid);
+
+	List<Cartitem> findAllByIdIn(List<Integer> selectedids);
+
+	Page<Cartitem> findByCartid(Cart cart, Pageable pageable);
+
 	
 
 

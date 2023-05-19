@@ -2,7 +2,6 @@ package com.example.model;
 
 import java.util.List;
 
-import com.example.service.MemberService;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -37,10 +36,6 @@ public class Cart {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "cartid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Cartitem> cartitems;
-	
-	@JsonManagedReference
-	@OneToMany(mappedBy = "cartid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Order> orders;
 	
 	public static Cart createCart(Member memberid) {
 		Cart cart = new Cart();

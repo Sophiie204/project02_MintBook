@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -77,6 +76,10 @@ public class Book {
 	@JsonManagedReference
 	@OneToMany(mappedBy = "bookid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Cartitem> cartitems;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "bookid", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Orderitem> orderitems;
 
 	public Book update(String bookName, String author, String bookInfo, String authorInfo, int genre, String img,
 			String isbn, int price, String publisher, LocalDate pubDate) {

@@ -1,22 +1,21 @@
 package com.example.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.model.Book;
@@ -65,7 +64,7 @@ public class CartitemController {
 	
 	
 		
-	//장바구니 담기(1개)
+	//장바구니 담기(상세페이지에서)
 	@PostMapping("/api/add/cartitem/{id}")
 	public ResponseEntity addCartitem(@PathVariable("id") int id,@RequestBody CartitemRequestDTO dto) {
 		
@@ -107,7 +106,7 @@ public class CartitemController {
 	
 	
 	
-	//장바구니 담기(여러개)
+	//장바구니 담기(목록에서)
 	@PostMapping("/api/add/cartitem2/{id}/{ids}")//memberid, bookids
 	public ResponseEntity addCartitem2(@PathVariable("id") int id, @PathVariable List<Integer> ids) {
 		
@@ -147,20 +146,58 @@ public class CartitemController {
 	}
 	
 	
+	//장바구니 추가(목록의 각 행에 있는 버튼에서)
+	@PostMapping("/api/add/cartitem3/{id}/{bookid}")//memberid, bookids
+	public ResponseEntity addCartitem3(@PathVariable("id") int id, @PathVariable("bookid") int bookid) {
+		
+		Member member = memberService.findById(id);
+		Cart cart = cartService.findByMemberid(member);
+		Book book = bookService.findById(bookid);
+		Cartitem cartitem = cartitemService.findByCartidAndBookid(cart, book);
+		
+		//장바구니가 존재하지 않는 경우
+		if(cart == null) {
+			cart = Cart.createCart(member);
+			cartRepository.save(cart);
+		}
+
+		//처음 등록되는 상품이 경우
+		if(cartitem == null) {
+			Cartitem newitem = new Cartitem();
+			newitem.setBookid(book);
+			newitem.setCartid(cart);
+			newitem.setCount(1);
+			cartitemService.save(newitem);
+		}else {
+			cartitem.setCount(cartitem.getCount()+1);
+			cartitemService.save(cartitem);
+		}
+				
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+	 
+	}
+	
+	
 	
 	//장바구니 목록
 	@GetMapping("/api/get/cartitem/{id}")
-	public ResponseEntity CartitemList(@PathVariable("id") int id){
+	public ResponseEntity CartitemList(@PathVariable("id") int id,
+									   @PageableDefault(size=10, 
+								       					sort = "id", 
+						       							direction = Sort.Direction.DESC) 
+														Pageable pageable){
 		
 		Member member = memberService.findById(id);//memberid
 		Cart cart = cartRepository.findByMemberid(member);//cartid
 		
-		List<Cartitem> cartitems = cartitemRepository.findByCartid(cart);
+		Page<Cartitem> cartitems = cartitemRepository.findByCartid(cart, pageable);
+
+		Page<CartitemResponseDTO> dto = new CartitemResponseDTO().toDtoList(cartitems);
+//		List<CartitemResponseDTO> dtos = cartitems.stream().map(CartitemResponseDTO::new)
+//														   .collect(Collectors.toList());
 		
-		List<CartitemResponseDTO> dtos = cartitems.stream().map(CartitemResponseDTO::new)
-														   .collect(Collectors.toList());
-		
-		return new ResponseEntity<>(dtos, HttpStatus.OK); 
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 	
 	

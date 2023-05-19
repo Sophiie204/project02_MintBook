@@ -35,11 +35,23 @@ public class CartitemService {
 		return cartitemRepository.findByCartidAndBookid(cart, book);
 	}
 
-	//장바구니 추가(여러개)
+	public Cartitem findById(int cartitemid) {
+		return cartitemRepository.findById(cartitemid).get();
+	}
 
-//	public Cartitem findByCartidAndBookid(Cart cart, int bookid) {
-//		return cartitemRepository.findByCartidAndBookid(cart, bookid);
-//	}
+	public List<Cartitem> findAllByIdIn(List<Integer> selectedids) {
+		return cartitemRepository.findAllByIdIn(selectedids);
+	}
+
+	public void deleteAllByIdIn(List<Integer> selectedids) {
+		cartitemRepository.deleteAllByIdIn(selectedids);
+		
+	}
+
+	public void deleteById(Cartitem cartitem) {
+		cartitemRepository.delete(cartitem);
+	}
+
 
 
 	

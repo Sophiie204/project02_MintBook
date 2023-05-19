@@ -19,8 +19,6 @@ import jakarta.transaction.Transactional;
 @Service
 public class CartService {
 
-	private static final Map<String, String> String = null;
-
 	@Autowired
 	private CartRepository cartRepository;
 	
@@ -67,11 +65,10 @@ public class CartService {
 	}
 
 
-//	public void save(Cart create) {
-//		cartRepository.save(create);
-//	}
+	public void delete(Cart cart) {
+		cartRepository.delete(cart);
+		
+	}
 
-
-	
 	
 }

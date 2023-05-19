@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.model.Book;
 import com.example.model.Cartitem;
+import com.example.model.Orderitem;
 import com.example.model.DTO.BookRequestDTO;
 import com.example.model.DTO.BooklistResponseDTO;
 import com.example.repository.BookRepository;
@@ -68,6 +69,18 @@ public class BookService {
 		
 	}
 
+	public void save(Book book) {
+		bookRepository.save(book);	
+	}
+
+	public List<Book> findAllByIdIn(List<Integer> selectedids) {
+		return bookRepository.findAllByIdIn(selectedids);
+	}
+
+
+
+
+	
 
 
 
